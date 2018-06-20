@@ -12,35 +12,32 @@ source:
   sha256: {{ checksum }}
 
 build:
-  number: 1
-  skip: true  # [win32]
-  skip: true  # [win and py<35]
-  features:
-    - vc14  # [win and py>=35]
+  number: 2
+  skip: true  # [win32 or (win and vc<14)]
 
 requirements:
   build:
+    - {{ compiler("c") }}
+    - {{ compiler("cxx") }}
+    - cmake
+
+  host:
     - python
-    - toolchain
     - setuptools
     - setuptools_scm
     - cython
-    - cmake
-    - numpy 1.10.*  # [not (win and py>=36)]
+    - numpy 1.11.*  # [not (win and py>=36)]
     - numpy 1.12.*  # [win and py>=36]
     - six
-    - arrow-cpp 0.9.0
-    - parquet-cpp 1.4.0
+    - arrow-cpp {{ version }}
+    - parquet-cpp
 
   run:
     - python
     - setuptools
-    - numpy >=1.10  # [not (win and py>=36)]
-    - numpy >=1.12  # [win and py>=36]
+    - {{ pin_compatible("numpy") }}
     - pandas
     - six
-    - arrow-cpp 0.9.0
-    - parquet-cpp 1.4.0
     - futures  # [py27]
 
 test:
