@@ -29,7 +29,6 @@ requirements:
     - numpy-devel   # [not (win and py>=36)]
     - six
     - arrow-cpp {{ version }}
-    - parquet-cpp
 
   run:
     - python
