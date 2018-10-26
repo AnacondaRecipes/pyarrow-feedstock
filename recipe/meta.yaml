@@ -1,19 +1,18 @@
-{% set version = "0.10.0" %}
-{% set commit = "07f142df646c9070fc9c627004dfdc96914fe487" %}
-{% set checksum = "ec8494f1906a2919d1eaa9445c97f88eacd38695bfbc5ae5f44315bcbbd6e609" %}
+{% set version = "0.11.0" %}
+{% set checksum = "1838faa3775e082062ad832942ebc03aaf95386c0284288346ddae0632be855d" %}
+
 
 package:
   name: pyarrow
   version: {{ version }}
 
 source:
-  fn: {{ commit }}.tar.gz
-  url: https://github.com/apache/arrow/archive/{{ commit }}.tar.gz
+  url: http://apache.cs.utah.edu/arrow/arrow-{{ version }}/apache-arrow-{{ version }}.tar.gz
   sha256: {{ checksum }}
 
 build:
   number: 0
-  skip: true  # [win32 or (win and vc<14)]
+  skip: true  # [linux32 or win32 or (win and vc<14)]
 
 requirements:
   build:
