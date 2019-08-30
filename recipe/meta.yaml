@@ -1,40 +1,49 @@
-{% set version = "0.11.1" %}
-{% set checksum = "c524f3d47f0cdb7445c0326b20e79f60485e12daeb2adc8ad6a845ad6c19c1ac" %}
-
+{% set version = "0.13.0" %}
+{% set filename = "apache-arrow-" + version + ".tar.gz" %}
+{% set checksum = "ac2a77dd9168e9892e432c474611e86ded0be6dfe15f689c948751d37f81391a" %}
 
 package:
   name: pyarrow
   version: {{ version }}
 
 source:
-  url: http://apache.cs.utah.edu/arrow/arrow-{{ version }}/apache-arrow-{{ version }}.tar.gz
+  fn: {{ filename }}
+  url: https://archive.apache.org/dist/arrow/arrow-{{ version }}/{{ filename }}
   sha256: {{ checksum }}
 
 build:
   number: 0
-  skip: true  # [linux32 or win32 or (win and vc<14)]
+  skip: true  # [win32]
+  skip: true  # [win and py<35]
 
 requirements:
   build:
-    - {{ compiler("c") }}
-    - {{ compiler("cxx") }}
     - cmake
-
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
   host:
+    # directly pin boost-cpp as we also seem to directly include boost symbols
+    # in the Python modules.
+    - boost-cpp
     - python
     - setuptools
     - setuptools_scm
     - cython
-    - numpy-devel   # [not (win and py>=36)]
+    - numpy 1.14.*
     - six
     - arrow-cpp {{ version }}
 
   run:
+    - boost-cpp
     - python
-    - setuptools
+    - {{ pin_compatible('numpy', lower_bound='1.14') }}
     - pandas
     - six
     - futures  # [py27]
+    - {{ pin_compatible('arrow-cpp') }}
+    - glog
+    - brotli # [osx]
+    - libprotobuf # [osx]
 
 test:
   imports:
@@ -57,4 +66,5 @@ extra:
     - robertnishihara
     - siddharthteotia
     - kou
-    - msarahan
+    - kszucs
+    - pitrou
