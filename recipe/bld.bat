@@ -13,10 +13,16 @@ copy /Y "%SRC_DIR%\cpp\cmake_modules\FindNumPy.cmake" cmake_modules\
 copy /Y "%SRC_DIR%\cpp\cmake_modules\FindPythonLibsNew.cmake" cmake_modules\
 
 SET ARROW_HOME=%LIBRARY_PREFIX%
-"%PYTHON%" setup.py build_ext ^
-           --with-parquet ^
-           --cmake-generator="%CMAKE_GENERATOR%"
+SET SETUPTOOLS_SCM_PRETEND_VERSION=%PKG_VERSION%
+SET PYARROW_BUILD_TYPE=release
+SET PYARROW_WITH_FLIGHT=1
+SET PYARROW_WITH_GANDIVA=0
+SET PYARROW_WITH_PARQUET=1
+SET PYARROW_CMAKE_GENERATOR=Ninja
+
 "%PYTHON%" setup.py ^
-           install --single-version-externally-managed --record=record.txt
+           build_ext ^
+           install --single-version-externally-managed ^
+                   --record=record.txt
 if errorlevel 1 exit 1
 popd
