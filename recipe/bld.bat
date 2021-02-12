@@ -30,3 +30,6 @@ SET PYARROW_WITH_CUDA=0
                    --record=record.txt
 if errorlevel 1 exit 1
 popd
+
+rd /s /q %SP_DIR%\pyarrow\tests
+

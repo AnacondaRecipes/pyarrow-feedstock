@@ -26,3 +26,6 @@ $PYTHON setup.py \
         build_ext \
         install --single-version-externally-managed \
                 --record=record.txt
+
+rm -r ${SP_DIR}/pyarrow/tests
+
