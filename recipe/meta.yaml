@@ -12,7 +12,7 @@ source:
   sha256: {{ checksum }}
 
 build:
-  number: 0
+  number: 1
   skip: true  # [win32]
   skip: true  # [win and py<35]
   ignore_run_exports:
@@ -55,11 +55,18 @@ requirements:
 test:
   imports:
     - pyarrow
+    - pyarrow.dataset
     - pyarrow.flight
     # - pyarrow.gandiva
     - pyarrow.orc      # [unix]
     - pyarrow.parquet
     - pyarrow.plasma   # [unix]
+    - pyarrow.fs
+    - pyarrow._s3fs
+    - pyarrow._hdfs
+  commands:
+    - test ! -f ${SP_DIR}/pyarrow/tests/test_array.py                         # [unix]
+    - if exist %SP_DIR%/pyarrow/tests/test_array.py exit 1                    # [win]
 
 about:
   home: http://github.com/apache/arrow
