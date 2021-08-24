@@ -38,7 +38,7 @@ requirements:
     - grpc-cpp
     - numpy
     - pip
-    - python >=3.6
+    - python
     - setuptools
     - setuptools_scm
     - six
@@ -50,7 +50,7 @@ requirements:
     - boost-cpp
     - glog
     - pandas
-    - python >=3.6
+    - python
     - six
     - snappy
     - gflags  # [unix]
