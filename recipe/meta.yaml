@@ -1,6 +1,6 @@
 {% set version = "4.0.1" %}
 {% set filename = "apache-arrow-" + version + ".tar.gz" %}
-{% set checksum = "75ccbfa276b925c6b1c978a920ff2f30c4b0d3fdf8b51777915b6f69a211896e" %}
+{% set checksum = "d9e09ffd8814f597ee2156e1484d1f9531a093576e52cf0410a5ea1c45005bc9" %}
 
 package:
   name: pyarrow
@@ -8,11 +8,11 @@ package:
 
 source:
   fn: {{ filename }}
-  url: https://dist.apache.org/repos/dist/release/arrow/arrow-{{ version }}/{{ filename }}
+  url:  https://github.com/apache/arrow/archive/refs/heads/release-4.0.1.tar.gz
   sha256: {{ checksum }}
 
 build:
-  number: 3
+  number: 4
   skip: true  # [win32]
   skip: true  # [win and py<35]
   entry_points:
@@ -67,6 +67,8 @@ test:
     - pyarrow.fs
     - pyarrow._s3fs
     - pyarrow._hdfs
+  requires:
+    - pip check
   commands:
     - test ! -f ${SP_DIR}/pyarrow/tests/test_array.py                         # [unix]
     - if exist %SP_DIR%/pyarrow/tests/test_array.py exit 1                    # [win]
