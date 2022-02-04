@@ -1,6 +1,6 @@
-{% set version = "4.0.1" %}
+{% set version = "7.0.0" %}
 {% set filename = "apache-arrow-" + version + ".tar.gz" %}
-{% set checksum = "75ccbfa276b925c6b1c978a920ff2f30c4b0d3fdf8b51777915b6f69a211896e" %}
+{% set checksum = "e8f49b149a15ecef4e40fcfab1b87c113c6b1ee186005c169e5cdf95d31a99de" %}
 
 package:
   name: pyarrow
