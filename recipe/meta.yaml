@@ -14,7 +14,7 @@ source:
 build:
   number: 0
   # arrow-cpp is not available for s390x, see arrow-cpp-feedstock for details.
-  skip: true  # [s390x]
+  skip: true  # [s390x or py<37]
   entry_points:
     - plasma_store = pyarrow:_plasma_store_entry_point
   ignore_run_exports:
@@ -33,7 +33,6 @@ requirements:
     # in the Python modules.
     - arrow-cpp {{ version }}
     - boost-cpp
-    # - clangdev
     - cython
     - grpc-cpp
     - numpy
@@ -41,7 +40,6 @@ requirements:
     - python
     - setuptools
     - setuptools_scm
-    - six
     - uriparser
     - wheel
   run:
@@ -49,9 +47,7 @@ requirements:
     - {{ pin_compatible('numpy', lower_bound='1.16.6') }}
     - boost-cpp
     - glog
-    - pandas
     - python
-    - six
     - snappy
     - gflags  # [unix]
 
