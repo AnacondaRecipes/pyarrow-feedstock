@@ -1,6 +1,6 @@
-{% set version = "4.0.1" %}
+{% set version = "8.0.0" %}
 {% set filename = "apache-arrow-" + version + ".tar.gz" %}
-{% set checksum = "75ccbfa276b925c6b1c978a920ff2f30c4b0d3fdf8b51777915b6f69a211896e" %}
+{% set checksum = "ad9a05705117c989c116bae9ac70492fe015050e1b80fb0e38fde4b5d863aaa3" %}
 
 package:
   name: pyarrow
@@ -12,9 +12,9 @@ source:
   sha256: {{ checksum }}
 
 build:
-  number: 3
-  skip: true  # [win32]
-  skip: true  # [win and py<35]
+  number: 0
+  # arrow-cpp is not available for s390x, see arrow-cpp-feedstock for details.
+  skip: true  # [s390x or py<37]
   entry_points:
     - plasma_store = pyarrow:_plasma_store_entry_point
   ignore_run_exports:
@@ -33,7 +33,6 @@ requirements:
     # in the Python modules.
     - arrow-cpp {{ version }}
     - boost-cpp
-    # - clangdev
     - cython
     - grpc-cpp
     - numpy
@@ -41,7 +40,6 @@ requirements:
     - python
     - setuptools
     - setuptools_scm
-    - six
     - uriparser
     - wheel
   run:
@@ -49,9 +47,7 @@ requirements:
     - {{ pin_compatible('numpy', lower_bound='1.16.6') }}
     - boost-cpp
     - glog
-    - pandas
     - python
-    - six
     - snappy
     - gflags  # [unix]
 
@@ -72,7 +68,7 @@ test:
     - if exist %SP_DIR%/pyarrow/tests/test_array.py exit 1                    # [win]
 
 about:
-  home: http://github.com/apache/arrow
+  home: https://github.com/apache/arrow
   license: Apache-2.0
   license_family: Apache
   license_file: LICENSE.txt
