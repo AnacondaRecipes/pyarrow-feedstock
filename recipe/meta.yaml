@@ -43,13 +43,14 @@ requirements:
     - uriparser
     - wheel
   run:
-    - {{ pin_compatible('arrow-cpp') }}
+    # - {{ pin_compatible('arrow-cpp') }}
+    - arrow-cpp >=10.0.0,<11.0a0
     - {{ pin_compatible('numpy', lower_bound='1.16.6') }}
     - boost-cpp
     - glog
     - python
     - snappy
-    - gflags  # [unix]
+    # - gflags  # [unix]
 
 test:
   imports:
@@ -59,7 +60,7 @@ test:
     # - pyarrow.gandiva
     - pyarrow.orc      # [unix]
     - pyarrow.parquet
-    - pyarrow.plasma   # [unix]
+    # - pyarrow.plasma   # [unix]
     - pyarrow.fs
     - pyarrow._s3fs
     - pyarrow._hdfs

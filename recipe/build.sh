@@ -13,7 +13,7 @@ export PYARROW_WITH_DATASET=1
 export PYARROW_WITH_FLIGHT=1
 export PYARROW_WITH_HDFS=1
 export PYARROW_WITH_ORC=1
-export PYARROW_WITH_PLASMA=1
+export PYARROW_WITH_PLASMA=0
 export PYARROW_WITH_PARQUET=1
 export PYARROW_WITH_ORC=1
 export PYARROW_WITH_S3=1
@@ -26,6 +26,9 @@ $PYTHON setup.py \
         build_ext \
         install --single-version-externally-managed \
                 --record=record.txt
+
+cp ${SRC_DIR}/python/build/dist/lib/*${SHLIB_EXT} ${PREFIX}/lib
+cp -r ${SRC_DIR}/python/build/dist/include/* ${PREFIX}/include
 
 rm -r ${SP_DIR}/pyarrow/tests
 
