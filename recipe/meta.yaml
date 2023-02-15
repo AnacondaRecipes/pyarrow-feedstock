@@ -21,6 +21,8 @@ build:
     - glog
     - snappy
     - grpc-cpp
+  missing_dso_whitelist:
+    - $RPATH/libarrow_python.so.1000  # [linux]
 requirements:
   build:
     - cmake
