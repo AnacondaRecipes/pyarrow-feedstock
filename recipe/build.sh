@@ -27,7 +27,8 @@ $PYTHON setup.py \
         install --single-version-externally-managed \
                 --record=record.txt
 
-cp ${SRC_DIR}/python/build/dist/lib/*${SHLIB_EXT} ${PREFIX}/lib
+#cp ${SRC_DIR}/python/build/dist/lib/*${SHLIB_EXT} ${PREFIX}/lib
+cp -r ${SRC_DIR}/python/build/dist/lib/* ${PREFIX}/lib
 cp -r ${SRC_DIR}/python/build/dist/include/* ${PREFIX}/include
 
 rm -r ${SP_DIR}/pyarrow/tests
