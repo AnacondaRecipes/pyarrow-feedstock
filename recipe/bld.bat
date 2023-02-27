@@ -23,6 +23,11 @@ SET PYARROW_WITH_GANDIVA=0
 SET PYARROW_WITH_PARQUET=1
 SET PYARROW_CMAKE_GENERATOR=Ninja
 SET PYARROW_WITH_CUDA=0
+@rem manually specify the path to the cmake config files
+SET Arrow_DIR=%ARROW_HOME%\cmake\Arrow
+SET ArrowFlight_DIR=%ARROW_HOME%\cmake\ArrowFlight
+SET ArrowDataset_DIR=%ARROW_HOME%\cmake\ArrowDataset
+SET Parquet_DIR=%ARROW_HOME%\cmake\Parquet
 
 "%PYTHON%" setup.py ^
            build_ext ^
