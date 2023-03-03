@@ -28,6 +28,14 @@ SET Arrow_DIR=%ARROW_HOME%\cmake\Arrow
 SET ArrowFlight_DIR=%ARROW_HOME%\cmake\ArrowFlight
 SET ArrowDataset_DIR=%ARROW_HOME%\cmake\ArrowDataset
 SET Parquet_DIR=%ARROW_HOME%\cmake\Parquet
+
+"%PYTHON%" setup.py ^
+           build_ext ^
+           install --single-version-externally-managed ^
+                   --record=record.txt
+if errorlevel 1 exit 1
+popd
+
 @rem move the arrow_python.* files to solve issue due to missing $RPATH
 copy /Y "%SRC_DIR%\python\build\dist\lib\arrow_python.lib" "%PREFIX%\Lib\"
 copy /Y "%SRC_DIR%\python\build\dist\lib\arrow_python.lib" "%PREFIX%\Lib\site-packages\pyarrow\"
@@ -43,12 +51,9 @@ copy /Y "%SRC_DIR%\python\build\dist\bin\arrow_python.dll" "%BUILD_PREFIX%\Libra
 copy /Y "%SRC_DIR%\python\build\dist\bin\arrow_python.dll" "%BUILD_PREFIX%\DLLs\"
 copy /Y "%SRC_DIR%\python\build\dist\lib\arrow_python.lib" "%BUILD_PREFIX%\libs\"
 
-"%PYTHON%" setup.py ^
-           build_ext ^
-           install --single-version-externally-managed ^
-                   --record=record.txt
-if errorlevel 1 exit 1
-popd
+
+copy /Y "%SRC_DIR%\python\build\dist\lib\arrow_python.lib" "%SP_DIR%/pyarrow/"
+copy /Y "%SRC_DIR%\python\build\dist\bin\arrow_python.dll" "%SP_DIR%/pyarrow/"
 
 rd /s /q %SP_DIR%\pyarrow\tests
 
