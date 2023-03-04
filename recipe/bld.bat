@@ -36,7 +36,7 @@ SET Parquet_DIR=%ARROW_HOME%\cmake\Parquet
 if errorlevel 1 exit 1
 popd
 
-@rem move the arrow_python.* files to solve issue due to missing $RPATH
+@rem move the arrow_python.* files to solve issue due to missing $RPATH on win-64
 copy /Y "%SRC_DIR%\python\build\dist\lib\arrow_python.lib" "%PREFIX%\Lib\"
 copy /Y "%SRC_DIR%\python\build\dist\lib\arrow_python.lib" "%PREFIX%\Lib\site-packages\pyarrow\"
 copy /Y "%SRC_DIR%\python\build\dist\bin\arrow_python.dll" "%PREFIX%\Lib\site-packages\pyarrow\"
