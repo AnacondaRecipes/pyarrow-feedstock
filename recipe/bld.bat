@@ -37,23 +37,8 @@ if errorlevel 1 exit 1
 popd
 
 @rem move the arrow_python.* files to solve issue due to missing $RPATH on win-64
-copy /Y "%SRC_DIR%\python\build\dist\lib\arrow_python.lib" "%PREFIX%\Lib\"
-copy /Y "%SRC_DIR%\python\build\dist\lib\arrow_python.lib" "%PREFIX%\Lib\site-packages\pyarrow\"
-copy /Y "%SRC_DIR%\python\build\dist\bin\arrow_python.dll" "%PREFIX%\Lib\site-packages\pyarrow\"
-copy /Y "%SRC_DIR%\python\build\dist\bin\arrow_python.dll" "%PREFIX%\Library\bin\"
-copy /Y "%SRC_DIR%\python\build\dist\bin\arrow_python.dll" "%PREFIX%\DLLs\"
-copy /Y "%SRC_DIR%\python\build\dist\lib\arrow_python.lib" "%PREFIX%\libs\"
-
-copy /Y "%SRC_DIR%\python\build\dist\lib\arrow_python.lib" "%BUILD_PREFIX%\Lib\"
-copy /Y "%SRC_DIR%\python\build\dist\lib\arrow_python.lib" "%BUILD_PREFIX%\Lib\site-packages\"
-copy /Y "%SRC_DIR%\python\build\dist\bin\arrow_python.dll" "%BUILD_PREFIX%\Lib\site-packages\"
-copy /Y "%SRC_DIR%\python\build\dist\bin\arrow_python.dll" "%BUILD_PREFIX%\Library\bin\"
-copy /Y "%SRC_DIR%\python\build\dist\bin\arrow_python.dll" "%BUILD_PREFIX%\DLLs\"
-copy /Y "%SRC_DIR%\python\build\dist\lib\arrow_python.lib" "%BUILD_PREFIX%\libs\"
-
-
-copy /Y "%SRC_DIR%\python\build\dist\lib\arrow_python.lib" "%SP_DIR%/pyarrow/"
-copy /Y "%SRC_DIR%\python\build\dist\bin\arrow_python.dll" "%SP_DIR%/pyarrow/"
+copy /Y "%SRC_DIR%\python\build\dist\lib\*.lib" "%PREFIX%\Lib\"
+copy /Y "%SRC_DIR%\python\build\dist\bin\*.dll" "%PREFIX%\Library\bin\"
 
 rd /s /q %SP_DIR%\pyarrow\tests
 
