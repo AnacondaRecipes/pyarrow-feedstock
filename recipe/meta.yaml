@@ -51,7 +51,7 @@ test:
     - pyarrow
     - pyarrow.dataset
     - pyarrow.flight
-    - pyarrow.orc      # [unix]
+    - pyarrow.orc
     - pyarrow.parquet
     - pyarrow.fs
     - pyarrow._s3fs
