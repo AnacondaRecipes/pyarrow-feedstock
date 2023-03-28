@@ -27,15 +27,15 @@ requirements:
     # directly pin boost-cpp as we also seem to directly include boost symbols
     # in the Python modules.
     - arrow-cpp {{ version }}
-    - boost-cpp
-    - cython
-    - grpc-cpp
+    - boost-cpp 1.73.0
+    - cython 0.29.32
+    - grpc-cpp 1.46.1
     - numpy
     - pip
     - python
     - setuptools
     - setuptools_scm
-    - uriparser
+    - uriparser 0.9.3
     - wheel
   run:
     # - {{ pin_compatible('arrow-cpp') }}
