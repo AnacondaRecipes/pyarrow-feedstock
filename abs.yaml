@@ -1,8 +1,6 @@
 channels:
   build: arrow-cpp
 
-
 build_parameters:
   - "--suppress-variables"
   - "--error-overlinking"
-  - "--error-overdepending"
