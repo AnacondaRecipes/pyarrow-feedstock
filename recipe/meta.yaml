@@ -54,7 +54,7 @@ test:
     - pyarrow.orc
     - pyarrow.parquet
     # Deprecated: will be removed in v12.0.0
-    - pyarrow.plasma
+    - pyarrow.plasma  # [not win]
     - pyarrow.fs
     - pyarrow._s3fs
     - pyarrow._hdfs
