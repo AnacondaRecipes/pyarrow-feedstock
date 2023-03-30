@@ -49,10 +49,15 @@ requirements:
 test:
   imports:
     - pyarrow
+    - pyarrow.compute
+    - pyarrow.csv
     - pyarrow.dataset
+    - pyarrow.filesystem
     - pyarrow.flight
+    - pyarrow.json
     - pyarrow.orc
     - pyarrow.parquet
+    - pyarrow.plasma
     - pyarrow.fs
     - pyarrow._s3fs
     - pyarrow._hdfs
