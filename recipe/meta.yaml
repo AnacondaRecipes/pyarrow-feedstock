@@ -29,7 +29,6 @@ requirements:
     - arrow-cpp {{ version }}
     - boost-cpp 1.73.0
     - cython 0.29.32
-    - grpc-cpp 1.46.1
     - numpy
     - pip
     - python
@@ -40,9 +39,8 @@ requirements:
   run:
     - {{ pin_compatible('numpy', lower_bound='1.16.6') }}
     - boost-cpp
-    - glog
     - python
-    - snappy
+    - gflags
 
 test:
   imports:
@@ -55,6 +53,7 @@ test:
     - pyarrow.json
     - pyarrow.orc
     - pyarrow.parquet
+    # Deprecated: will be removed in v12.0.0
     - pyarrow.plasma
     - pyarrow.fs
     - pyarrow._s3fs
