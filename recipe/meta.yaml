@@ -1,6 +1,6 @@
-{% set version = "8.0.0" %}
+{% set version = "10.0.1" %}
 {% set filename = "apache-arrow-" + version + ".tar.gz" %}
-{% set checksum = "ad9a05705117c989c116bae9ac70492fe015050e1b80fb0e38fde4b5d863aaa3" %}
+{% set checksum = "c814e0670112a22c1a6ec03ab420a52ae236a9a42e9e438c3cbd37f37e658fb3" %}
 
 package:
   name: pyarrow
@@ -15,12 +15,7 @@ build:
   number: 0
   # arrow-cpp is not available for s390x, see arrow-cpp-feedstock for details.
   skip: true  # [s390x or py<37]
-  entry_points:
-    - plasma_store = pyarrow:_plasma_store_entry_point
-  ignore_run_exports:
-    - glog
-    - snappy
-    - grpc-cpp
+
 requirements:
   build:
     - cmake
@@ -32,40 +27,40 @@ requirements:
     # directly pin boost-cpp as we also seem to directly include boost symbols
     # in the Python modules.
     - arrow-cpp {{ version }}
-    - boost-cpp
-    - cython
-    - grpc-cpp
+    - boost-cpp 1.73.0
+    - cython 0.29.32
     - numpy
     - pip
     - python
     - setuptools
     - setuptools_scm
-    - uriparser
+    - uriparser 0.9.3
     - wheel
   run:
-    - {{ pin_compatible('arrow-cpp') }}
     - {{ pin_compatible('numpy', lower_bound='1.16.6') }}
     - boost-cpp
-    - glog
     - python
-    - snappy
-    - gflags  # [unix]
+    - gflags
 
 test:
   imports:
     - pyarrow
+    - pyarrow.compute
+    - pyarrow.csv
     - pyarrow.dataset
+    - pyarrow.filesystem
     - pyarrow.flight
-    # - pyarrow.gandiva
-    - pyarrow.orc      # [unix]
+    - pyarrow.json
+    - pyarrow.orc
     - pyarrow.parquet
-    - pyarrow.plasma   # [unix]
+    # Deprecated: will be removed in v12.0.0
+    - pyarrow.plasma  # [not win]
     - pyarrow.fs
     - pyarrow._s3fs
     - pyarrow._hdfs
   commands:
-    - test ! -f ${SP_DIR}/pyarrow/tests/test_array.py                         # [unix]
-    - if exist %SP_DIR%/pyarrow/tests/test_array.py exit 1                    # [win]
+    - test ! -f ${SP_DIR}/pyarrow/tests/test_array.py       # [unix]
+    - if exist %SP_DIR%/pyarrow/tests/test_array.py exit 1  # [win]
 
 about:
   home: https://github.com/apache/arrow
@@ -73,6 +68,10 @@ about:
   license_family: Apache
   license_file: LICENSE.txt
   summary: 'Python libraries for Apache Arrow'
+  description: |
+    This library provides a Python API for functionality provided by the Arrow C++ libraries, 
+    along with tools for Arrow integration and interoperability with pandas, NumPy, and other 
+    software in the Python ecosystem.
   dev_url: https://github.com/apache/arrow/tree/master/python
   doc_url: https://github.com/apache/arrow/blob/master/docs/source/developers/python.rst
 
@@ -87,4 +86,4 @@ extra:
     - siddharthteotia
     - kou
     - kszucs
-    - pitrou
+    - pitrou 
