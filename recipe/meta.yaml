@@ -22,8 +22,8 @@ build:
     - {{ SP_DIR }}/pyarrow
   missing_dso_whitelist:
     # These can be found in {{ SP_DIR }}, see the tests below
-    - "*/libarrow_python{{ SHLIB_EXT }}"         #[unix]
-    - "*/libarrow_python_flight{{ SHLIB_EXT }}"  #[unix]
+    - "*/libarrow_python{{ SHLIB_EXT }}"         # [unix]
+    - "*/libarrow_python_flight{{ SHLIB_EXT }}"  # [unix]
     - "*/arrow_python.dll"                # [win]
     - "*/arrow_python_flight.dll"         # [win]
 
@@ -74,8 +74,8 @@ test:
     - if exist %SP_DIR%/pyarrow/tests/test_array.py exit 1  # [win]
     - test -f ${SP_DIR}/pyarrow/libarrow_python_flight${SHLIB_EXT}  # [unix]
     - test -f ${SP_DIR}/pyarrow/libarrow_python${SHLIB_EXT}  # [unix]
-    - if not exist %SP_DIR%/pyarrow/libarrow_python_flight%SHLIB_EXT% exit 1 # [win]
-    - if not exist %SP_DIR%/pyarrow/libarrow_python%SHLIB_EXT% exit 1 # [win]
+    - if not exist %SP_DIR%\pyarrow\arrow_python.dll exit 1                   # [win]
+    - if not exist %SP_DIR%\pyarrow\arrow_python_flight.dll exit 1            # [win]
 
 about:
   home: https://github.com/apache/arrow
