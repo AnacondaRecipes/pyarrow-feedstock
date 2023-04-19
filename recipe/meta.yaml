@@ -1,20 +1,30 @@
-{% set version = "10.0.1" %}
+# Note that this feedstock must be paired with bumping the version of
+# `arrow-cpp-feedstock` and the SHA-256 hashes should match between the packages.
+{% set version = "11.0.0" %}
 {% set filename = "apache-arrow-" + version + ".tar.gz" %}
-{% set checksum = "c814e0670112a22c1a6ec03ab420a52ae236a9a42e9e438c3cbd37f37e658fb3" %}
+{% set sha256 = "2dd8f0ea0848a58785628ee3a57675548d509e17213a2f5d72b0d900b43f5430" %}
 
 package:
   name: pyarrow
   version: {{ version }}
 
 source:
-  fn: {{ filename }}
   url: https://dist.apache.org/repos/dist/release/arrow/arrow-{{ version }}/{{ filename }}
-  sha256: {{ checksum }}
+  sha256: {{ sha256 }}
 
 build:
   number: 0
   # arrow-cpp is not available for s390x, see arrow-cpp-feedstock for details.
   skip: true  # [s390x or py<37]
+  rpaths:
+    - lib/
+    - {{ SP_DIR }}/pyarrow
+  missing_dso_whitelist:
+    # These can be found in {{ SP_DIR }}, see the tests below
+    - "*/libarrow_python{{ SHLIB_EXT }}"         # [unix]
+    - "*/libarrow_python_flight{{ SHLIB_EXT }}"  # [unix]
+    - "*/arrow_python.dll"                # [win]
+    - "*/arrow_python_flight.dll"         # [win]
 
 requirements:
   build:
@@ -61,6 +71,10 @@ test:
   commands:
     - test ! -f ${SP_DIR}/pyarrow/tests/test_array.py       # [unix]
     - if exist %SP_DIR%/pyarrow/tests/test_array.py exit 1  # [win]
+    - test -f ${SP_DIR}/pyarrow/libarrow_python_flight${SHLIB_EXT}  # [unix]
+    - test -f ${SP_DIR}/pyarrow/libarrow_python${SHLIB_EXT}  # [unix]
+    - if not exist %SP_DIR%\pyarrow\arrow_python.dll exit 1                   # [win]
+    - if not exist %SP_DIR%\pyarrow\arrow_python_flight.dll exit 1            # [win]
 
 about:
   home: https://github.com/apache/arrow
