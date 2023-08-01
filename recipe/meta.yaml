@@ -13,7 +13,7 @@ source:
   sha256: {{ sha256 }}
 
 build:
-  number: 0
+  number: 1
   # arrow-cpp is not available for s390x, see arrow-cpp-feedstock for details.
   skip: true  # [s390x or py<37]
   rpaths:
