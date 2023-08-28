@@ -37,7 +37,7 @@ requirements:
     # directly pin boost-cpp as we also seem to directly include boost symbols
     # in the Python modules.
     - arrow-cpp {{ version }}
-    - boost-cpp {{ boost_cpp }}
+    - boost-cpp 1.82
     - cython 0.29.32
     - numpy
     - pip
