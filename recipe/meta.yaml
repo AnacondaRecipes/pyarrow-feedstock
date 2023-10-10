@@ -4,7 +4,7 @@
 
 package:
   name: pyarrow
-  version: {{ version }}
+  version: {{ version }}+openssl1
 
 source:
   fn: {{ filename }}
@@ -26,8 +26,8 @@ requirements:
   host:
     # directly pin boost-cpp as we also seem to directly include boost symbols
     # in the Python modules.
-    - arrow-cpp {{ version }}
-    - boost-cpp 1.73.0
+    - arrow-cpp {{ version }}+openssl1
+    - boost-cpp {{ boost }}
     - cython 0.29.32
     - numpy
     - pip
