@@ -43,7 +43,7 @@ requirements:
     - python
     - setuptools
     - setuptools_scm <8.0.0
-    - uriparser 0.9.3
+    - uriparser 0.9.7
     - wheel
   run:
     - {{ pin_compatible('numpy', lower_bound='1.16.6') }}
