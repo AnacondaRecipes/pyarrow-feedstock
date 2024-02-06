@@ -37,7 +37,7 @@ requirements:
     # in the Python modules.
     - arrow-cpp {{ version }}
     - boost-cpp 1.82
-    - cython 0.29.36
+    - cython >=0.29.36
     - numpy
     - pip
     - python
