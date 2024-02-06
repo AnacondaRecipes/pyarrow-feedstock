@@ -38,10 +38,8 @@ SET ArrowFlight_DIR=%ARROW_HOME%\cmake\ArrowFlight
 SET ArrowDataset_DIR=%ARROW_HOME%\cmake\ArrowDataset
 SET Parquet_DIR=%ARROW_HOME%\cmake\Parquet
 
-"%PYTHON%" setup.py ^
-           build_ext ^
-           install --single-version-externally-managed ^
-                   --record=record.txt
+"%PYTHON%" -m pip install . -vv --no-deps --no-build-isolation --global-option="build_ext" --global-option="--single-version-externally-managed" --global-option="--record=record.txt"
+
 if errorlevel 1 exit 1
 popd
 
