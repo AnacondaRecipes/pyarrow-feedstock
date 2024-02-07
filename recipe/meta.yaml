@@ -49,7 +49,6 @@ requirements:
     - {{ pin_compatible('numpy', lower_bound='1.16.6') }}
     - boost-cpp
     - python
-    - gflags
 
 test:
   imports:

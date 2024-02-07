@@ -22,6 +22,6 @@ export PYARROW_WITH_CUDA=0
 
 cd python
 
-${PYTHON} -m pip install . -vv --no-deps --no-build-isolation --global-option="build_ext" --global-option="--single-version-externally-managed" --global-option="--record=record.txt"
+${PYTHON} -m pip install . -vv --no-deps --no-build-isolation
 
 rm -r ${SP_DIR}/pyarrow/tests
