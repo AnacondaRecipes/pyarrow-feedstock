@@ -33,7 +33,9 @@ SET PYARROW_WITH_CUDA=0
 SET Arrow_DIR=%ARROW_HOME%\cmake\Arrow
 SET ArrowFlight_DIR=%ARROW_HOME%\cmake\ArrowFlight
 SET ArrowDataset_DIR=%ARROW_HOME%\cmake\ArrowDataset
+SET ArrowAcero_DIR=%ARROW_HOME%\cmake\ArrowAcero
 SET Parquet_DIR=%ARROW_HOME%\cmake\Parquet
+SET ArrowSubstrait_DIR=%ARROW_HOME%\cmake\ArrowSubstrait
 
 "%PYTHON%" -m pip install . -vv --no-deps --no-build-isolation --global-option="build_ext" --global-option="--single-version-externally-managed" --global-option="--record=record.txt"
 
