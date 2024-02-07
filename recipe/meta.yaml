@@ -1,8 +1,8 @@
 # Note that this feedstock must be paired with bumping the version of
 # `arrow-cpp-feedstock` and the SHA-256 hashes should match between the packages.
-{% set version = "11.0.0" %}
+{% set version = "14.0.2" %}
 {% set filename = "apache-arrow-" + version + ".tar.gz" %}
-{% set sha256 = "2dd8f0ea0848a58785628ee3a57675548d509e17213a2f5d72b0d900b43f5430" %}
+{% set sha256 = "1304dedb41896008b89fe0738c71a95d9b81752efc77fa70f264cb1da15d9bc2" %}
 
 package:
   name: pyarrow
@@ -13,9 +13,8 @@ source:
   sha256: {{ sha256 }}
 
 build:
-  number: 2
-  # arrow-cpp is not available for s390x, see arrow-cpp-feedstock for details.
-  skip: true  # [s390x or py<37]
+  number: 0
+  skip: true  # [py<38]
   rpaths:
     - lib/
     - {{ SP_DIR }}/pyarrow
@@ -38,19 +37,18 @@ requirements:
     # in the Python modules.
     - arrow-cpp {{ version }}
     - boost-cpp 1.82
-    - cython 0.29
+    - cython >=0.29.36
     - numpy
     - pip
     - python
     - setuptools
-    - setuptools_scm
-    - uriparser 0.9.3
+    - setuptools_scm <8.0.0
+    - uriparser 0.9.7
     - wheel
   run:
     - {{ pin_compatible('numpy', lower_bound='1.16.6') }}
     - boost-cpp
     - python
-    - gflags
 
 test:
   imports:
@@ -63,8 +61,6 @@ test:
     - pyarrow.json
     - pyarrow.orc
     - pyarrow.parquet
-    # Deprecated: will be removed in v12.0.0
-    - pyarrow.plasma  # [not win]
     - pyarrow.fs
     - pyarrow._s3fs
     - pyarrow._hdfs
