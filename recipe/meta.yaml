@@ -22,8 +22,9 @@ build:
     # These can be found in {{ SP_DIR }}, see the tests below
     - "*/libarrow_python{{ SHLIB_EXT }}"         # [unix]
     - "*/libarrow_python_flight{{ SHLIB_EXT }}"  # [unix]
-    - "*/arrow_python.dll"                # [win]
-    - "*/arrow_python_flight.dll"         # [win]
+    - "*/arrow_python.dll"                       # [win]
+    - "*/arrow_python_flight.dll"                # [win]
+    - "*/arrow_python_parquet_encryption.dll"    # [win]
 
 requirements:
   build:
