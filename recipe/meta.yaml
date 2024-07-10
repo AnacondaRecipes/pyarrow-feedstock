@@ -1,8 +1,8 @@
 # Note that this feedstock must be paired with bumping the version of
 # `arrow-cpp-feedstock` and the SHA-256 hashes should match between the packages.
-{% set version = "14.0.2" %}
+{% set version = "16.1.0" %}
 {% set filename = "apache-arrow-" + version + ".tar.gz" %}
-{% set sha256 = "1304dedb41896008b89fe0738c71a95d9b81752efc77fa70f264cb1da15d9bc2" %}
+{% set sha256 = "c9e60c7e87e59383d21b20dc874b17153729ee153264af6d21654b7dff2c60d7" %}
 
 package:
   name: pyarrow
@@ -36,18 +36,15 @@ requirements:
     # directly pin boost-cpp as we also seem to directly include boost symbols
     # in the Python modules.
     - arrow-cpp {{ version }}
-    - boost-cpp 1.82
-    - cython >=0.29.36
-    - numpy
+    - cython >=0.29.31
+    - numpy {{ numpy }}
     - pip
     - python
     - setuptools
-    - setuptools_scm <8.0.0
-    - uriparser 0.9.7
+    - setuptools_scm
     - wheel
   run:
-    - {{ pin_compatible('numpy', lower_bound='1.16.6') }}
-    - boost-cpp
+    - {{ pin_compatible('numpy') }}
     - python
 
 test:
@@ -56,7 +53,6 @@ test:
     - pyarrow.compute
     - pyarrow.csv
     - pyarrow.dataset
-    - pyarrow.filesystem
     - pyarrow.flight
     - pyarrow.json
     - pyarrow.orc
@@ -64,7 +60,10 @@ test:
     - pyarrow.fs
     - pyarrow._s3fs
     - pyarrow._hdfs
+  requires:
+    - pip
   commands:
+    - pip check
     - test ! -f ${SP_DIR}/pyarrow/tests/test_array.py       # [unix]
     - if exist %SP_DIR%/pyarrow/tests/test_array.py exit 1  # [win]
     - test -f ${SP_DIR}/pyarrow/libarrow_python_flight${SHLIB_EXT}  # [unix]
@@ -77,13 +76,13 @@ about:
   license: Apache-2.0
   license_family: Apache
   license_file: LICENSE.txt
-  summary: 'Python libraries for Apache Arrow'
+  summary: Python libraries for Apache Arrow
   description: |
     This library provides a Python API for functionality provided by the Arrow C++ libraries, 
     along with tools for Arrow integration and interoperability with pandas, NumPy, and other 
     software in the Python ecosystem.
-  dev_url: https://github.com/apache/arrow/tree/master/python
-  doc_url: https://github.com/apache/arrow/blob/master/docs/source/developers/python.rst
+  dev_url: https://github.com/apache/arrow/tree/main/python
+  doc_url: https://github.com/apache/arrow/blob/main/docs/source/developers/python.rst
 
 extra:
   recipe-maintainers:
