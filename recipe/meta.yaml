@@ -52,6 +52,7 @@ test:
   imports:
     - pyarrow
     - pyarrow.compute
+    - pyarrow.acero
     - pyarrow.csv
     - pyarrow.dataset
     - pyarrow.flight
