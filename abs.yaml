@@ -1,2 +1,2 @@
-channels:
-  - https://staging.continuum.io/prefect/fs/arrow-cpp-feedstock/pr42/7a82b09
+build_env_vars:
+  ANACONDA_ROCKET_ENABLE_PY313 : yes
