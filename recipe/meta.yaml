@@ -20,8 +20,9 @@ build:
     # These can be found in {{ SP_DIR }}, see the tests below
     - "*/libarrow_python{{ SHLIB_EXT }}"         # [unix]
     - "*/libarrow_python_flight{{ SHLIB_EXT }}"  # [unix]
-    - "*/arrow_python.dll"                # [win]
-    - "*/arrow_python_flight.dll"         # [win]
+    - "*/arrow_python.dll"                       # [win]
+    - "*/arrow_python_flight.dll"                # [win]
+    - "*/arrow_python_parquet_encryption.dll"    # [win]
 
 requirements:
   build:
@@ -41,8 +42,7 @@ requirements:
     - pip
     - python
     - setuptools
-    - setuptools_scm <8.0.0
-    - uriparser 0.9.7
+    - setuptools_scm
     - wheel
   run:
     - numpy >=1.23.5,<3
@@ -53,9 +53,9 @@ test:
   imports:
     - pyarrow
     - pyarrow.compute
+    - pyarrow.acero
     - pyarrow.csv
     - pyarrow.dataset
-    - pyarrow.filesystem
     - pyarrow.flight
     - pyarrow.json
     - pyarrow.orc
@@ -63,7 +63,10 @@ test:
     - pyarrow.fs
     - pyarrow._s3fs
     - pyarrow._hdfs
+  requires:
+    - pip
   commands:
+    - pip check
     - test ! -f ${SP_DIR}/pyarrow/tests/test_array.py       # [unix]
     - if exist %SP_DIR%/pyarrow/tests/test_array.py exit 1  # [win]
     - test -f ${SP_DIR}/pyarrow/libarrow_python_flight${SHLIB_EXT}  # [unix]
@@ -76,13 +79,13 @@ about:
   license: Apache-2.0
   license_family: Apache
   license_file: LICENSE.txt
-  summary: 'Python libraries for Apache Arrow'
+  summary: Python libraries for Apache Arrow
   description: |
     This library provides a Python API for functionality provided by the Arrow C++ libraries, 
     along with tools for Arrow integration and interoperability with pandas, NumPy, and other 
     software in the Python ecosystem.
-  dev_url: https://github.com/apache/arrow/tree/master/python
-  doc_url: https://github.com/apache/arrow/blob/master/docs/source/developers/python.rst
+  dev_url: https://github.com/apache/arrow/tree/main/python
+  doc_url: https://github.com/apache/arrow/blob/main/docs/source/developers/python.rst
 
 extra:
   recipe-maintainers:
