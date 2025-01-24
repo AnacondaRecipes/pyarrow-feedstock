@@ -35,7 +35,7 @@ requirements:
     - arrow-cpp {{ version }}
     - cython >=0.29.36
     - numpy 2.0 # [py<313]
-    - numpy 2.1 # [py==313]
+    - numpy 2.1 # [py>=313]
     - pip
     - python
     - setuptools
