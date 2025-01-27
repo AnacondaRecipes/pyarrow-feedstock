@@ -73,8 +73,16 @@ test:
   requires:
     - pip
     - pytest
+    - boto3
+    - cffi
+    - cloudpickle
+    - fastparquet
+    - fsspec
     - hypothesis
-    - s3fs
+    - pandas
+    # s3fs is not avaliable on py313
+    - s3fs >=2023  # [py<313]
+    - scipy
 
 about:
   home: https://github.com/apache/arrow
