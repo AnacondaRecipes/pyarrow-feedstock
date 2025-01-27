@@ -73,6 +73,8 @@ test:
   requires:
     - pip
     - pytest
+    - hypothesis
+    - s3fs
 
 about:
   home: https://github.com/apache/arrow
