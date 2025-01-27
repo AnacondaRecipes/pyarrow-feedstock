@@ -1,6 +1,6 @@
 # Note that this feedstock must be paired with bumping the version of
 # `arrow-cpp-feedstock` and the SHA-256 hashes should match between the packages.
-{% set version = "17.0.0" %}
+{% set version = "19.0.0" %}
 
 package:
   name: pyarrow
@@ -8,7 +8,7 @@ package:
 
 source:
   url: https://archive.apache.org/dist/arrow/arrow-{{ version }}/apache-arrow-{{ version }}.tar.gz
-  sha256: 9d280d8042e7cf526f8c28d170d93bfab65e50f94569f6a790982a878d8d898d
+  sha256: f89b93f39954740f7184735ff1e1d3b5be2640396febc872c4955274a011f56b
 
 build:
   number: 1
@@ -46,6 +46,8 @@ requirements:
     - python
 
 test:
+  source_files:
+    - python/pyarrow/tests
   imports:
     - pyarrow
     - pyarrow.compute
@@ -59,8 +61,6 @@ test:
     - pyarrow.fs
     - pyarrow._s3fs
     - pyarrow._hdfs
-  requires:
-    - pip
   commands:
     - pip check
     - test ! -f ${SP_DIR}/pyarrow/tests/test_array.py       # [unix]
@@ -69,6 +69,11 @@ test:
     - test -f ${SP_DIR}/pyarrow/libarrow_python${SHLIB_EXT}  # [unix]
     - if not exist %SP_DIR%\pyarrow\arrow_python.dll exit 1                   # [win]
     - if not exist %SP_DIR%\pyarrow\arrow_python_flight.dll exit 1            # [win]
+    # +++++++
+    - pytest -v python/pyarrow/tests
+  requires:
+    - pip
+    - pytest
 
 about:
   home: https://github.com/apache/arrow
