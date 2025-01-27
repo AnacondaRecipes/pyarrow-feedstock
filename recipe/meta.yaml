@@ -1,19 +1,17 @@
 # Note that this feedstock must be paired with bumping the version of
 # `arrow-cpp-feedstock` and the SHA-256 hashes should match between the packages.
 {% set version = "17.0.0" %}
-{% set filename = "apache-arrow-" + version + ".tar.gz" %}
-{% set sha256 = "9d280d8042e7cf526f8c28d170d93bfab65e50f94569f6a790982a878d8d898d" %}
 
 package:
   name: pyarrow
   version: {{ version }}
 
 source:
-  url: https://archive.apache.org/dist/arrow/arrow-{{ version }}/{{ filename }}
-  sha256: {{ sha256 }}
+  url: https://archive.apache.org/dist/arrow/arrow-{{ version }}/apache-arrow-{{ version }}.tar.gz
+  sha256: 9d280d8042e7cf526f8c28d170d93bfab65e50f94569f6a790982a878d8d898d
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py<38]
   rpaths:
     - lib/
@@ -34,18 +32,17 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
   host:
-    # directly pin boost-cpp as we also seem to directly include boost symbols
-    # in the Python modules.
     - arrow-cpp {{ version }}
-    - cython >=0.29.31
-    - numpy {{ numpy }}
+    - cython >=0.29.36
+    - numpy 2.0 # [py<313]
+    - numpy 2.1 # [py>=313]
     - pip
     - python
     - setuptools
     - setuptools_scm
     - wheel
   run:
-    - {{ pin_compatible('numpy') }}
+    - numpy >=1.23.5,<3
     - python
 
 test:
