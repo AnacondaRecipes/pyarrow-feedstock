@@ -12,7 +12,7 @@ source:
 
 build:
   number: 0
-  skip: true  # [py<38]
+  skip: true  # [py<39]
   rpaths:
     - lib/
     - {{ SP_DIR }}/pyarrow
@@ -33,7 +33,7 @@ requirements:
     - {{ compiler('cxx') }}
   host:
     - arrow-cpp {{ version }}
-    - cython >=0.29.36
+    - cython >=0.29.31
     - numpy 2.0 # [py<313]
     - numpy 2.1 # [py>=313]
     - pip
