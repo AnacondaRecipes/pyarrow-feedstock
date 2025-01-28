@@ -65,6 +65,22 @@ requirements:
     #   - pyarrow/tests/test_sparse_tensor.py::test_sparse_coo_tensor_scipy_roundtrip
 {% set tests_to_skip = tests_to_skip + " or test_sparse_coo_tensor_scipy_roundtrip" %}
 
+# pyarrow.lib.ArrowNotImplementedError: This Arrow build does not enable mimalloc
+# - pyarrow\tests\test_memory.py::test_memory_pool_factories
+{% set tests_to_skip = tests_to_skip + " or test_memory_pool_factories" %} # [win]
+
+# Exception: Unrecognized table name
+# - pyarrow\tests\test_memory.py::test_supported_memory_backends
+{% set tests_to_skip = tests_to_skip + " or test_supported_memory_backends" %} # [win]
+
+# assert False + where False = any(<generator object test_get_library_dirs_win32.<locals>.<genexpr> at 0x0000025041A59E40>)
+# - pyarrow\tests\test_misc.py::test_get_library_dirs_win32
+{% set tests_to_skip = tests_to_skip + " or test_get_library_dirs_win32" %} # [win]
+
+# Unsupported backend 'mimalloc' specified in ARROW_DEFAULT_MEMORY_POOL (supported backends are 'system')
+# - pyarrow\tests\test_memory.py::test_env_var
+{% set tests_to_skip = tests_to_skip + " or test_env_var" %} # [win]
+
 test:
   imports:
     - pyarrow
