@@ -69,7 +69,7 @@ test:
     #- test -f ${SP_DIR}/pyarrow/libarrow_python${SHLIB_EXT}  # [unix]
     #- if not exist %SP_DIR%\pyarrow\arrow_python.dll exit 1                   # [win]
     #- if not exist %SP_DIR%\pyarrow\arrow_python_flight.dll exit 1            # [win]
-    - pytest -v python/pyarrow/tests  # [py<313]
+    - pytest -v python/pyarrow/tests  # [py<313 or not (s390x)]
   requires:
     - pip
     - pytest
@@ -82,7 +82,7 @@ test:
     - pandas
     # s3fs and fastparquet are not avaliable on py313
     - s3fs >=2023  # [py<313]
-    - fastparquet  # [py<313]
+    - fastparquet  # [py<313 or not (s390x)]
     
 
 about:
