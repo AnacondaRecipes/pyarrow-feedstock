@@ -69,20 +69,21 @@ test:
     #- test -f ${SP_DIR}/pyarrow/libarrow_python${SHLIB_EXT}  # [unix]
     #- if not exist %SP_DIR%\pyarrow\arrow_python.dll exit 1                   # [win]
     #- if not exist %SP_DIR%\pyarrow\arrow_python_flight.dll exit 1            # [win]
-    - pytest -v python/pyarrow/tests
+    - pytest -v python/pyarrow/tests  # [py<313]
   requires:
     - pip
     - pytest
     - boto3
     - cffi
     - cloudpickle
-    - fastparquet
+    - scipy
     - fsspec
     - hypothesis
     - pandas
-    # s3fs is not avaliable on py313
+    # s3fs and fastparquet are not avaliable on py313
     - s3fs >=2023  # [py<313]
-    - scipy
+    - fastparquet  # [py<313]
+    
 
 about:
   home: https://github.com/apache/arrow
