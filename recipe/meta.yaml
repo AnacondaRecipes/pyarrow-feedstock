@@ -13,9 +13,9 @@ source:
 build:
   number: 0
   skip: true  # [py<38]
-  #rpaths:
-  #  - lib/
-    #- {{ SP_DIR }}/pyarrow
+  rpaths:
+    - lib/
+    - {{ SP_DIR }}/pyarrow
   missing_dso_whitelist:
     # These can be found in {{ SP_DIR }}, see the tests below
     - "*/libarrow_python{{ SHLIB_EXT }}"         # [unix]
@@ -46,34 +46,52 @@ requirements:
     - python
 
 test:
-  source_files:
-    - python/pyarrow/tests
   imports:
     - pyarrow
-    #- pyarrow.compute
-    #- pyarrow.acero
-    #- pyarrow.csv
-    #- pyarrow.dataset
-    #- pyarrow.flight
-    #- pyarrow.json
-    #- pyarrow.orc
-    #- pyarrow.parquet
-    #- pyarrow.fs
-    #- pyarrow._s3fs
-    #- pyarrow._hdfs
+    - pyarrow.lib
+    - pyarrow.compute
+    - pyarrow.acero
+    - pyarrow.csv
+    - pyarrow.dataset
+    - pyarrow.flight
+    - pyarrow.json
+    - pyarrow.orc
+    - pyarrow.parquet
+    - pyarrow.fs
+    - pyarrow._s3fs
+    - pyarrow._hdfs
   commands:
     - pip check
-    #- test ! -f ${SP_DIR}/pyarrow/tests/test_array.py       # [unix]
-    #- if exist %SP_DIR%/pyarrow/tests/test_array.py exit 1  # [win]
-    #- test -f ${SP_DIR}/pyarrow/libarrow_python_flight${SHLIB_EXT}  # [unix]
-    #- test -f ${SP_DIR}/pyarrow/libarrow_python${SHLIB_EXT}  # [unix]
-    #- if not exist %SP_DIR%\pyarrow\arrow_python.dll exit 1                   # [win]
-    #- if not exist %SP_DIR%\pyarrow\arrow_python_flight.dll exit 1            # [win]
-    - pytest -v python/pyarrow/tests  # [py<313 or not (s390x)]
+    # Check for pytests in the site-package dir
+    - test -f ${SP_DIR}/pyarrow/tests/test_array.py  # [unix]
+    - if not exist %SP_DIR%/pyarrow/tests/test_array.py exit 1  # [win]
+
+    # Check on shared objects
+    - test -f ${SP_DIR}/pyarrow/libarrow_python_flight${SHLIB_EXT}  # [unix]
+    - test -f ${SP_DIR}/pyarrow/libarrow_python${SHLIB_EXT}  # [unix]
+    - if not exist %SP_DIR%\pyarrow\arrow_python.dll exit 1  # [win]
+    - if not exist %SP_DIR%\pyarrow\arrow_python_flight.dll exit 1  # [win]
+
+    # Run all the tests:
+    # https://arrow.apache.org/docs/developers/guide/step_by_step/testing.html
+
+    # RuntimeError: Test resources not found; set ARROW_TEST_DATA to <repo root>/testing/data
+    # <repo root>/testing/data is empty by default.
+    # Skiped tests with these errors:
+      # - pyarrow/tests/parquet/test_metadata.py::test_column_chunk_key_value_metadata
+      # - pyarrow/tests/test_flight.py::test_generic_options
+      # - pyarrow/tests/test_flight.py::test_tls_do_get
+      # - pyarrow/tests/test_flight.py::test_tls_disable_server_verification
+      # - pyarrow/tests/test_flight.py::test_tls_override_hostname
+      # - pyarrow/tests/test_flight.py::test_mtls
+    # ValueError: scipy.sparse does not support dtype float16. The only supported types are: bool_, int8, uint8, int16, uint16, int32, uint32, int64, uint64, longlong, ulonglong, float32, float64, longdouble, complex64, complex128, clongdouble.
+    # https://github.com/apache/arrow/issues/45229 - temporary disabled:
+      # - pyarrow/tests/test_sparse_tensor.py::test_sparse_coo_tensor_scipy_roundtrip
+    - python -m pytest -v -k "not (test_column_chunk_key_value_metadata or test_generic_options or test_tls_do_get or test_tls_disable_server_verification or test_tls_override_hostname or test_mtls or test_sparse_coo_tensor_scipy_roundtrip)" ${SP_DIR}/pyarrow  # [unix or py<313 or not (linux and s390x)]
+    - python -m pytest -v -k "not (test_column_chunk_key_value_metadata or test_generic_options or test_tls_do_get or test_tls_disable_server_verification or test_tls_override_hostname or test_mtls or test_sparse_coo_tensor_scipy_roundtrip)" %SP_DIR%/pyarrow  # [win or py<313 or not (linux and s390x)]
   requires:
     - pip
     - pytest
-    - boto3
     - cffi
     - cloudpickle
     - scipy
@@ -82,8 +100,8 @@ test:
     - pandas
     # s3fs and fastparquet are not avaliable on py313
     - s3fs >=2023  # [py<313]
-    - fastparquet  # [py<313 or not (s390x)]
-    
+    # fastparquet is not avaliable on s390x
+    - fastparquet  # [py<313 or not (linux and s390x)]
 
 about:
   home: https://github.com/apache/arrow
