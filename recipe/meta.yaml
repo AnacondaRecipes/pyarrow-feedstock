@@ -1,6 +1,6 @@
 # Note that this feedstock must be paired with bumping the version of
 # `arrow-cpp-feedstock` and the SHA-256 hashes should match between the packages.
-{% set version = "17.0.0" %}
+{% set version = "19.0.0" %}
 
 package:
   name: pyarrow
@@ -8,11 +8,11 @@ package:
 
 source:
   url: https://archive.apache.org/dist/arrow/arrow-{{ version }}/apache-arrow-{{ version }}.tar.gz
-  sha256: 9d280d8042e7cf526f8c28d170d93bfab65e50f94569f6a790982a878d8d898d
+  sha256: f89b93f39954740f7184735ff1e1d3b5be2640396febc872c4955274a011f56b
 
 build:
-  number: 1
-  skip: true  # [py<38]
+  number: 0
+  skip: true  # [py<39]
   rpaths:
     - lib/
     - {{ SP_DIR }}/pyarrow
@@ -33,7 +33,7 @@ requirements:
     - {{ compiler('cxx') }}
   host:
     - arrow-cpp {{ version }}
-    - cython >=0.29.36
+    - cython >=0.29.31
     - numpy 2.0 # [py<313]
     - numpy 2.1 # [py>=313]
     - pip
@@ -45,9 +45,46 @@ requirements:
     - numpy >=1.23.5,<3
     - python
 
+# RuntimeError: Test resources not found; set ARROW_TEST_DATA to <repo root>/testing/data
+    # <repo root>/testing/data is empty by default.
+    # Skiped tests with these errors:
+    #   - pyarrow/tests/parquet/test_metadata.py::test_column_chunk_key_value_metadata
+    #   - pyarrow/tests/test_flight.py::test_generic_options
+    #   - pyarrow/tests/test_flight.py::test_tls_do_get
+    #   - pyarrow/tests/test_flight.py::test_tls_disable_server_verification
+    #   - pyarrow/tests/test_flight.py::test_tls_override_hostname
+    #   - pyarrow/tests/test_flight.py::test_mtls
+{% set tests_to_skip = "test_column_chunk_key_value_metadata" %}
+{% set tests_to_skip = tests_to_skip + " or test_generic_options" %}
+{% set tests_to_skip = tests_to_skip + " or test_tls_do_get" %}
+{% set tests_to_skip = tests_to_skip + " or test_tls_disable_server_verification" %}
+{% set tests_to_skip = tests_to_skip + " or test_tls_override_hostname" %}
+{% set tests_to_skip = tests_to_skip + " or test_mtls" %}
+# ValueError: scipy.sparse does not support dtype float16. The only supported types are: bool_, int8, uint8, int16, uint16, int32, uint32, int64, uint64, longlong, ulonglong, float32, float64, longdouble, complex64, complex128, clongdouble.
+    # https://github.com/apache/arrow/issues/45229 - temporary disabled:
+    #   - pyarrow/tests/test_sparse_tensor.py::test_sparse_coo_tensor_scipy_roundtrip
+{% set tests_to_skip = tests_to_skip + " or test_sparse_coo_tensor_scipy_roundtrip" %}
+
+# pyarrow.lib.ArrowNotImplementedError: This Arrow build does not enable mimalloc
+# - pyarrow\tests\test_memory.py::test_memory_pool_factories
+{% set tests_to_skip = tests_to_skip + " or test_memory_pool_factories" %} # [win]
+
+# Exception: Unrecognized table name
+# - pyarrow\tests\test_memory.py::test_supported_memory_backends
+{% set tests_to_skip = tests_to_skip + " or test_supported_memory_backends" %} # [win]
+
+# assert False + where False = any(<generator object test_get_library_dirs_win32.<locals>.<genexpr> at 0x0000025041A59E40>)
+# - pyarrow\tests\test_misc.py::test_get_library_dirs_win32
+{% set tests_to_skip = tests_to_skip + " or test_get_library_dirs_win32" %} # [win]
+
+# Unsupported backend 'mimalloc' specified in ARROW_DEFAULT_MEMORY_POOL (supported backends are 'system')
+# - pyarrow\tests\test_memory.py::test_env_var
+{% set tests_to_skip = tests_to_skip + " or test_env_var" %} # [win]
+
 test:
   imports:
     - pyarrow
+    - pyarrow.lib
     - pyarrow.compute
     - pyarrow.acero
     - pyarrow.csv
@@ -59,16 +96,38 @@ test:
     - pyarrow.fs
     - pyarrow._s3fs
     - pyarrow._hdfs
-  requires:
-    - pip
   commands:
     - pip check
-    - test ! -f ${SP_DIR}/pyarrow/tests/test_array.py       # [unix]
-    - if exist %SP_DIR%/pyarrow/tests/test_array.py exit 1  # [win]
+    # Check for pytests in the site-package dir
+    - test -f ${SP_DIR}/pyarrow/tests/test_array.py  # [unix]
+    - if not exist %SP_DIR%/pyarrow/tests/test_array.py exit 1  # [win]
+
+    # Check on shared objects
     - test -f ${SP_DIR}/pyarrow/libarrow_python_flight${SHLIB_EXT}  # [unix]
     - test -f ${SP_DIR}/pyarrow/libarrow_python${SHLIB_EXT}  # [unix]
-    - if not exist %SP_DIR%\pyarrow\arrow_python.dll exit 1                   # [win]
-    - if not exist %SP_DIR%\pyarrow\arrow_python_flight.dll exit 1            # [win]
+    - if not exist %SP_DIR%\pyarrow\arrow_python.dll exit 1  # [win]
+    - if not exist %SP_DIR%\pyarrow\arrow_python_flight.dll exit 1  # [win]
+
+    # Run all the tests:
+    # https://arrow.apache.org/docs/developers/guide/step_by_step/testing.html
+    # Tests disabled on all osx targets. Changing the open file descriptors max count on the OSX target is not a good idea.     
+    # OSError: [Errno 24] Too many open files
+    - python -m pytest -v -k "not ({{ tests_to_skip }})" ${SP_DIR}/pyarrow  # [linux and py<313 and not (linux and s390x)]
+    - python -m pytest -v -k "not ({{ tests_to_skip }})" %SP_DIR%/pyarrow  # [win and py<313]
+
+  requires:
+    - pip
+    - pytest
+    - cffi
+    - cloudpickle
+    - scipy
+    - fsspec
+    - hypothesis
+    - pandas
+    # s3fs and fastparquet are not avaliable on py313
+    - s3fs >=2023  # [py<313]
+    # fastparquet is not avaliable on s390x
+    - fastparquet  # [py<313 and not (linux and s390x)]
 
 about:
   home: https://github.com/apache/arrow

@@ -32,5 +32,3 @@ SET ArrowSubstrait_DIR=%ARROW_HOME%\cmake\ArrowSubstrait
 
 if errorlevel 1 exit 1
 popd
-
-rd /s /q %SP_DIR%\pyarrow\tests
