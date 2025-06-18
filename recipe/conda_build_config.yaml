@@ -2,3 +2,10 @@ c_compiler_version:
   - 17.0.6            # [osx]
 cxx_compiler_version:
   - 17.0.6            # [osx]
+
+MACOSX_SDK_VERSION:  # [osx]
+  - 11.1  # [(osx and arm64)]
+  - 10.15  # [(osx and x86_64)]
+CONDA_BUILD_SYSROOT:         # [osx]
+  - /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk  # [(osx and arm64)]
+  - /opt/MacOSX10.15.sdk  # [(osx and x86_64)]
