@@ -32,6 +32,7 @@ requirements:
     - make  # [unix]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
+    - libcxx  # [osx]
   host:
     - arrow-cpp {{ version }}
     - cython >=0.29.31
