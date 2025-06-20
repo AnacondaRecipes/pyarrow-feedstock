@@ -1,18 +1,19 @@
 # Note that this feedstock must be paired with bumping the version of
 # `arrow-cpp-feedstock` and the SHA-256 hashes should match between the packages.
-{% set version = "17.0.0" %}
+{% set name = "pyarrow" %}
+{% set version = "18.1.0" %}
 
 package:
-  name: pyarrow
+  name: {{ name }}
   version: {{ version }}
 
 source:
   url: https://archive.apache.org/dist/arrow/arrow-{{ version }}/apache-arrow-{{ version }}.tar.gz
-  sha256: 9d280d8042e7cf526f8c28d170d93bfab65e50f94569f6a790982a878d8d898d
+  sha256: 2dc8da5f8796afe213ecc5e5aba85bb82d91520eff3cf315784a52d0fa61d7fc
 
 build:
-  number: 1
-  skip: true  # [py<38]
+  number: 0
+  skip: true  # [py<39]
   rpaths:
     - lib/
     - {{ SP_DIR }}/pyarrow
@@ -33,16 +34,17 @@ requirements:
     - {{ compiler('cxx') }}
   host:
     - arrow-cpp {{ version }}
-    - cython >=0.29.36
-    - numpy 2.0 # [py<313]
-    - numpy 2.1 # [py>=313]
+    - cython >=0.29.31
+    - numpy {{ numpy }}
     - pip
     - python
-    - setuptools
-    - setuptools_scm
+    - setuptools >=64
+    # setuptools_scm[toml]>=8
+    - setuptools_scm >=8
+    - toml
     - wheel
   run:
-    - numpy >=1.23.5,<3
+    - numpy >=1.25,<3
     - python
 
 test:
@@ -59,8 +61,6 @@ test:
     - pyarrow.fs
     - pyarrow._s3fs
     - pyarrow._hdfs
-  requires:
-    - pip
   commands:
     - pip check
     - test ! -f ${SP_DIR}/pyarrow/tests/test_array.py       # [unix]
@@ -69,6 +69,8 @@ test:
     - test -f ${SP_DIR}/pyarrow/libarrow_python${SHLIB_EXT}  # [unix]
     - if not exist %SP_DIR%\pyarrow\arrow_python.dll exit 1                   # [win]
     - if not exist %SP_DIR%\pyarrow\arrow_python_flight.dll exit 1            # [win]
+  requires:
+    - pip
 
 about:
   home: https://github.com/apache/arrow
