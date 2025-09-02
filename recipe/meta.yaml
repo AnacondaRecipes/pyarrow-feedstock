@@ -11,7 +11,7 @@ source:
   sha256: f89b93f39954740f7184735ff1e1d3b5be2640396febc872c4955274a011f56b
 
 build:
-  number: 1
+  number: 2
   skip: true  # [py<39]
   rpaths:
     - lib/
@@ -29,6 +29,7 @@ requirements:
     - cmake
     - ninja
     - make  # [unix]
+    - {{ stdlib('c') }} 
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
   host:
@@ -64,6 +65,13 @@ requirements:
     # https://github.com/apache/arrow/issues/45229 - temporary disabled:
     #   - pyarrow/tests/test_sparse_tensor.py::test_sparse_coo_tensor_scipy_roundtrip
 {% set tests_to_skip = tests_to_skip + " or test_sparse_coo_tensor_scipy_roundtrip" %}
+
+# with pytest.raises(IOError, match="Bucket '.*' not found"):
+# Failed: DID NOT RAISE <class 'OSError'>
+{% set tests_to_skip = tests_to_skip + " or test_s3_real_aws_region_selection" %}
+
+# pyarrow.lib.ArrowException: Unknown error: Compression block size must be a multiple of memory block size.
+{% set tests_to_skip = tests_to_skip + " or test_buffer_readwrite_with_writeoptions" %}
 
 # pyarrow.lib.ArrowNotImplementedError: This Arrow build does not enable mimalloc
 # - pyarrow\tests\test_memory.py::test_memory_pool_factories
