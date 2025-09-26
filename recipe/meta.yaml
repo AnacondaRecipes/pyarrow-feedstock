@@ -1,6 +1,6 @@
 # Note that this feedstock must be paired with bumping the version of
 # `arrow-cpp-feedstock` and the SHA-256 hashes should match between the packages.
-{% set version = "19.0.0" %}
+{% set version = "21.0.0" %}
 
 package:
   name: pyarrow
@@ -8,10 +8,10 @@ package:
 
 source:
   url: https://archive.apache.org/dist/arrow/arrow-{{ version }}/apache-arrow-{{ version }}.tar.gz
-  sha256: f89b93f39954740f7184735ff1e1d3b5be2640396febc872c4955274a011f56b
+  sha256: 5d3f8db7e72fb9f65f4785b7a1634522e8d8e9657a445af53d4a34a3849857b5
 
 build:
-  number: 2
+  number: 0
   skip: true  # [py<39]
   rpaths:
     - lib/
@@ -23,6 +23,9 @@ build:
     - "*/arrow_python.dll"                       # [win]
     - "*/arrow_python_flight.dll"                # [win]
     - "*/arrow_python_parquet_encryption.dll"    # [win]
+  ignore_run_exports:
+    # Only needed at build time
+    - numpy
 
 requirements:
   build:
@@ -34,16 +37,15 @@ requirements:
     - {{ compiler('cxx') }}
   host:
     - arrow-cpp {{ version }}
-    - cython >=0.29.31
+    - cython >=3
     - numpy 2.0 # [py<313]
     - numpy 2.1 # [py>=313]
     - pip
     - python
-    - setuptools
-    - setuptools_scm
+    - setuptools >=64
+    - setuptools_scm >=8
     - wheel
   run:
-    - numpy >=1.23.5,<3
     - python
 
 # RuntimeError: Test resources not found; set ARROW_TEST_DATA to <repo root>/testing/data
