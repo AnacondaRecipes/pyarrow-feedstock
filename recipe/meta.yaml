@@ -7,8 +7,15 @@ package:
   version: {{ version }}
 
 source:
-  url: https://archive.apache.org/dist/arrow/arrow-{{ version }}/apache-arrow-{{ version }}.tar.gz
-  sha256: 5d3f8db7e72fb9f65f4785b7a1634522e8d8e9657a445af53d4a34a3849857b5
+  - url: https://archive.apache.org/dist/arrow/arrow-{{ version }}/apache-arrow-{{ version }}.tar.gz
+    sha256: 5d3f8db7e72fb9f65f4785b7a1634522e8d8e9657a445af53d4a34a3849857b5
+  # test data (commits taken from submodules)
+  - git_url: https://github.com/apache/parquet-testing.git
+    git_rev: 18d17540097fca7c40be3d42c167e6bfad90763c
+    folder: parquet-testing
+  - git_url: https://github.com/apache/arrow-testing.git
+    git_rev: fbf6b703dc93d17d75fa3664c5aa2c7873ebaf06
+    folder: arrow-testing
 
 build:
   number: 0
@@ -48,25 +55,10 @@ requirements:
   run:
     - python
 
-# RuntimeError: Test resources not found; set ARROW_TEST_DATA to <repo root>/testing/data
-    # <repo root>/testing/data is empty by default.
-    # Skiped tests with these errors:
-    #   - pyarrow/tests/parquet/test_metadata.py::test_column_chunk_key_value_metadata
-    #   - pyarrow/tests/test_flight.py::test_generic_options
-    #   - pyarrow/tests/test_flight.py::test_tls_do_get
-    #   - pyarrow/tests/test_flight.py::test_tls_disable_server_verification
-    #   - pyarrow/tests/test_flight.py::test_tls_override_hostname
-    #   - pyarrow/tests/test_flight.py::test_mtls
-{% set tests_to_skip = "test_column_chunk_key_value_metadata" %}
-{% set tests_to_skip = tests_to_skip + " or test_generic_options" %}
-{% set tests_to_skip = tests_to_skip + " or test_tls_do_get" %}
-{% set tests_to_skip = tests_to_skip + " or test_tls_disable_server_verification" %}
-{% set tests_to_skip = tests_to_skip + " or test_tls_override_hostname" %}
-{% set tests_to_skip = tests_to_skip + " or test_mtls" %}
 # ValueError: scipy.sparse does not support dtype float16. The only supported types are: bool_, int8, uint8, int16, uint16, int32, uint32, int64, uint64, longlong, ulonglong, float32, float64, longdouble, complex64, complex128, clongdouble.
     # https://github.com/apache/arrow/issues/45229 - temporary disabled:
     #   - pyarrow/tests/test_sparse_tensor.py::test_sparse_coo_tensor_scipy_roundtrip
-{% set tests_to_skip = tests_to_skip + " or test_sparse_coo_tensor_scipy_roundtrip" %}
+{% set tests_to_skip = "test_sparse_coo_tensor_scipy_roundtrip" %}
 
 # with pytest.raises(IOError, match="Bucket '.*' not found"):
 # Failed: DID NOT RAISE <class 'OSError'>
@@ -92,6 +84,9 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_env_var" %} # [win]
 
 test:
+  source_files:
+    - parquet-testing
+    - arrow-testing
   imports:
     - pyarrow
     - pyarrow.lib
@@ -122,8 +117,8 @@ test:
     # https://arrow.apache.org/docs/developers/guide/step_by_step/testing.html
     # Tests disabled on all osx targets. Changing the open file descriptors max count on the OSX target is not a good idea.     
     # OSError: [Errno 24] Too many open files
-    - python -m pytest -v -k "not ({{ tests_to_skip }})" ${SP_DIR}/pyarrow  # [linux and py<313 and not (linux and s390x)]
-    - python -m pytest -v -k "not ({{ tests_to_skip }})" %SP_DIR%/pyarrow  # [win and py<313]
+    - ARROW_TEST_DATA=arrow-testing/data PARQUET_TEST_DATA=parquet-testing/data python -m pytest -v -k "not ({{ tests_to_skip }})" ${SP_DIR}/pyarrow  # [linux and py<313]
+    - ARROW_TEST_DATA=arrow-testing/data PARQUET_TEST_DATA=parquet-testing/data python -m pytest -v -k "not ({{ tests_to_skip }})" %SP_DIR%/pyarrow  # [win and py<313]
 
   requires:
     - pip
@@ -136,8 +131,7 @@ test:
     - pandas
     # s3fs and fastparquet are not avaliable on py313
     - s3fs >=2023  # [py<313]
-    # fastparquet is not avaliable on s390x
-    - fastparquet  # [py<313 and not (linux and s390x)]
+    - fastparquet  # [py<313]
 
 about:
   home: https://github.com/apache/arrow
