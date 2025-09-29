@@ -27,6 +27,7 @@ SET ArrowDataset_DIR=%ARROW_HOME%\cmake\ArrowDataset
 SET ArrowAcero_DIR=%ARROW_HOME%\cmake\ArrowAcero
 SET Parquet_DIR=%ARROW_HOME%\cmake\Parquet
 SET ArrowSubstrait_DIR=%ARROW_HOME%\cmake\ArrowSubstrait
+SET ArrowCompute_DIR=%ARROW_HOME%\cmake\ArrowCompute
 
 "%PYTHON%" -m pip install . -vv --no-deps --no-build-isolation
 
