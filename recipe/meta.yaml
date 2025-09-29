@@ -10,12 +10,15 @@ source:
   - url: https://archive.apache.org/dist/arrow/arrow-{{ version }}/apache-arrow-{{ version }}.tar.gz
     sha256: 5d3f8db7e72fb9f65f4785b7a1634522e8d8e9657a445af53d4a34a3849857b5
   # test data (commits taken from submodules)
+  # downloading by git is broken on windows workers atm
+  {% if not win %}
   - git_url: https://github.com/apache/parquet-testing.git
     git_rev: 18d17540097fca7c40be3d42c167e6bfad90763c
     folder: parquet-testing
   - git_url: https://github.com/apache/arrow-testing.git
     git_rev: fbf6b703dc93d17d75fa3664c5aa2c7873ebaf06
     folder: arrow-testing
+  {% endif %}
 
 build:
   number: 0
