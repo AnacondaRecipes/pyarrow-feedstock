@@ -86,10 +86,6 @@ requirements:
 # - pyarrow\tests\test_memory.py::test_env_var
 {% set tests_to_skip = tests_to_skip + " or test_env_var" %} # [win]
 
-# Crashes on OSX (passing locally)
-{% set tests_to_skip = tests_to_skip + " or test_never_sends_data" %} # [osx]
-{% set tests_to_skip = tests_to_skip + " or test_none_action_side_effect" %} # [osx]
-
 # Tests requiring ARROW_TEST_DATA - not available on windows
 {% set tests_to_skip = tests_to_skip + " or test_tls_do_get" %}                       # [win]
 {% set tests_to_skip = tests_to_skip + " or test_tls_disable_server_verification" %}  # [win]
@@ -134,7 +130,9 @@ test:
 
     # Run all the tests:
     # https://arrow.apache.org/docs/developers/guide/step_by_step/testing.html
-    - ARROW_TEST_DATA=arrow-testing/data PARQUET_TEST_DATA=parquet-testing/data python -m pytest -vv -k "not ({{ tests_to_skip }})" ${SP_DIR}/pyarrow  # [unix]
+    # Tests disabled on all osx targets. Changing the open file descriptors max count on the OSX target is not a good idea.     
+    # OSError: [Errno 24] Too many open files
+    - ARROW_TEST_DATA=arrow-testing/data PARQUET_TEST_DATA=parquet-testing/data python -m pytest -vv -k "not ({{ tests_to_skip }})" ${SP_DIR}/pyarrow  # [linux]
     - python -m pytest -vv -k "not ({{ tests_to_skip }})" %SP_DIR%/pyarrow  # [win]
 
   requires:
