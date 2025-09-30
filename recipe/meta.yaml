@@ -89,6 +89,18 @@ requirements:
 # Crashes on OSX (passing locally)
 {% set tests_to_skip = tests_to_skip + " or test_never_sends_data" %} # [osx]
 
+# Tests requiring ARROW_TEST_DATA - not available on windows
+{% set tests_to_skip = tests_to_skip + " or test_tls_do_get" %}                       # [win]
+{% set tests_to_skip = tests_to_skip + " or test_tls_disable_server_verification" %}  # [win]
+{% set tests_to_skip = tests_to_skip + " or test_tls_override_hostname" %}            # [win]
+{% set tests_to_skip = tests_to_skip + " or test_mtls" %}                             # [win]
+{% set tests_to_skip = tests_to_skip + " or test_generic_options" %}                  # [win]
+
+# Tests requiring PARQUET_TEST_DATA - not available on windows
+{% set tests_to_skip = tests_to_skip + " or test_undefined_logical_type" %}           # [win]
+{% set tests_to_skip = tests_to_skip + " or test_column_chunk_key_value_metadata" %}  # [win]
+{% set tests_to_skip = tests_to_skip + " or test_read_undefined_logical_type" %}      # [win]
+
 test:
   source_files:
     - parquet-testing  # [not win]
