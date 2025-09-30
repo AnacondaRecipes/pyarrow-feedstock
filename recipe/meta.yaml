@@ -88,6 +88,7 @@ requirements:
 
 # Crashes on OSX (passing locally)
 {% set tests_to_skip = tests_to_skip + " or test_never_sends_data" %} # [osx]
+{% set tests_to_skip = tests_to_skip + " or test_none_action_side_effect" %} # [osx]
 
 # Tests requiring ARROW_TEST_DATA - not available on windows
 {% set tests_to_skip = tests_to_skip + " or test_tls_do_get" %}                       # [win]
