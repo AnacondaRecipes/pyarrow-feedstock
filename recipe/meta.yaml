@@ -88,8 +88,8 @@ requirements:
 
 test:
   source_files:
-    - parquet-testing
-    - arrow-testing
+    - parquet-testing  # [not win]
+    - arrow-testing  # [not win]
   imports:
     - pyarrow
     - pyarrow.lib
@@ -118,10 +118,8 @@ test:
 
     # Run all the tests:
     # https://arrow.apache.org/docs/developers/guide/step_by_step/testing.html
-    # Tests disabled on all osx targets. Changing the open file descriptors max count on the OSX target is not a good idea.     
-    # OSError: [Errno 24] Too many open files
-    - ARROW_TEST_DATA=arrow-testing/data PARQUET_TEST_DATA=parquet-testing/data python -m pytest -v -k "not ({{ tests_to_skip }})" ${SP_DIR}/pyarrow  # [linux and py<313]
-    - ARROW_TEST_DATA=arrow-testing/data PARQUET_TEST_DATA=parquet-testing/data python -m pytest -v -k "not ({{ tests_to_skip }})" %SP_DIR%/pyarrow  # [win and py<313]
+    - ARROW_TEST_DATA=arrow-testing/data PARQUET_TEST_DATA=parquet-testing/data python -m pytest -v -k "not ({{ tests_to_skip }})" ${SP_DIR}/pyarrow  # [unix]
+    - python -m pytest -v -k "not ({{ tests_to_skip }})" %SP_DIR%/pyarrow  # [win]
 
   requires:
     - pip
@@ -132,9 +130,8 @@ test:
     - fsspec
     - hypothesis
     - pandas
-    # s3fs and fastparquet are not avaliable on py313
-    - s3fs >=2023  # [py<313]
-    - fastparquet  # [py<313]
+    - s3fs >=2023
+    - fastparquet
 
 about:
   home: https://github.com/apache/arrow
