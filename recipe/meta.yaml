@@ -40,7 +40,7 @@ build:
 requirements:
   build:
     - cmake
-    - ninja
+    - ninja-base
     - make  # [unix]
     - {{ stdlib('c') }} 
     - {{ compiler('c') }}
