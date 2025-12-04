@@ -21,7 +21,7 @@ source:
   {% endif %}
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py<39]
   rpaths:
     - lib/
@@ -49,7 +49,7 @@ requirements:
     - arrow-cpp {{ version }}
     - cython >=3
     - numpy 2.0 # [py<313]
-    - numpy 2.1 # [py>=313]
+    - numpy >=2.3 # [py>=313]
     - pip
     - python
     - setuptools >=64
@@ -144,7 +144,7 @@ test:
     - fsspec
     - hypothesis
     - pandas
-    - s3fs >=2023
+    - s3fs >=2023  # [py!=314]
     - fastparquet
 
 about:
