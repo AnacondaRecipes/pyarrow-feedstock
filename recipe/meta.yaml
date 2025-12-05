@@ -76,6 +76,10 @@ requirements:
 
 {% set tests_to_skip = tests_to_skip + " or test_to_pandas_zero_copy" %}   # [(linux or win) and py==314]
 
+#  PermissionError: [WinError 32] The process cannot access the file because it is being used by another process
+# ..\_test_env\lib\pathlib.py:1206: PermissionError
+{% set tests_to_skip = tests_to_skip + " or test_relative_paths" %}   # [win and py==310]
+
 # pyarrow.lib.ArrowNotImplementedError: This Arrow build does not enable mimalloc
 # - pyarrow\tests\test_memory.py::test_memory_pool_factories
 {% set tests_to_skip = tests_to_skip + " or test_memory_pool_factories" %} # [win]
