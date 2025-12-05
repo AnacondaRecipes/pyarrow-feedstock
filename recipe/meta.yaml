@@ -48,8 +48,7 @@ requirements:
   host:
     - arrow-cpp {{ version }}
     - cython >=3
-    - numpy 2.0 # [py<313]
-    - numpy >=2.3 # [py>=313]
+    - numpy {{ numpy }}
     - pip
     - python
     - setuptools >=64
