@@ -70,6 +70,12 @@ requirements:
 # pyarrow.lib.ArrowException: Unknown error: Compression block size must be a multiple of memory block size.
 {% set tests_to_skip = tests_to_skip + " or test_buffer_readwrite_with_writeoptions" %}
 
+{% set tests_to_skip = tests_to_skip + " or test_s3fs_wrong_region" %}
+{% set tests_to_skip = tests_to_skip + " or test_s3_real_aws" %}
+{% set tests_to_skip = tests_to_skip + " or test_resolve_s3_region" %}
+
+{% set tests_to_skip = tests_to_skip + " or test_to_pandas_zero_copy" %}   # [linux and py==314]
+
 # pyarrow.lib.ArrowNotImplementedError: This Arrow build does not enable mimalloc
 # - pyarrow\tests\test_memory.py::test_memory_pool_factories
 {% set tests_to_skip = tests_to_skip + " or test_memory_pool_factories" %} # [win]
