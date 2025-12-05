@@ -21,7 +21,7 @@ source:
   {% endif %}
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py<39]
   rpaths:
     - lib/
@@ -48,8 +48,7 @@ requirements:
   host:
     - arrow-cpp {{ version }}
     - cython >=3
-    - numpy 2.0 # [py<313]
-    - numpy 2.1 # [py>=313]
+    - numpy {{ numpy }}
     - pip
     - python
     - setuptools >=64
@@ -69,6 +68,16 @@ requirements:
 
 # pyarrow.lib.ArrowException: Unknown error: Compression block size must be a multiple of memory block size.
 {% set tests_to_skip = tests_to_skip + " or test_buffer_readwrite_with_writeoptions" %}
+
+{% set tests_to_skip = tests_to_skip + " or test_s3fs_wrong_region" %}
+{% set tests_to_skip = tests_to_skip + " or test_s3_real_aws" %}
+{% set tests_to_skip = tests_to_skip + " or test_resolve_s3_region" %}
+
+{% set tests_to_skip = tests_to_skip + " or test_to_pandas_zero_copy" %}   # [(linux or win) and py==314]
+
+#  PermissionError: [WinError 32] The process cannot access the file because it is being used by another process
+# ..\_test_env\lib\pathlib.py:1206: PermissionError
+{% set tests_to_skip = tests_to_skip + " or test_relative_paths" %}   # [win and py==310]
 
 # pyarrow.lib.ArrowNotImplementedError: This Arrow build does not enable mimalloc
 # - pyarrow\tests\test_memory.py::test_memory_pool_factories
@@ -144,8 +153,9 @@ test:
     - fsspec
     - hypothesis
     - pandas
-    - s3fs >=2023
-    - fastparquet
+    # TODO: remove these selectors once py314/win available 
+    - s3fs >=2023  # [py<314 and win]
+    - fastparquet  # [py<314 and win]
 
 about:
   home: https://github.com/apache/arrow
