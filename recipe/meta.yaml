@@ -150,8 +150,8 @@ test:
     - fsspec
     - hypothesis
     - pandas
-    - s3fs >=2023  # [py!=314]
-    - fastparquet
+    - s3fs >=2023  # [py<314 and win]
+    - fastparquet  # [py<314 and win]
 
 about:
   home: https://github.com/apache/arrow
