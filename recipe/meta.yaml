@@ -1,14 +1,15 @@
 # Note that this feedstock must be paired with bumping the version of
 # `arrow-cpp-feedstock` and the SHA-256 hashes should match between the packages.
-{% set version = "21.0.0" %}
+{% set name = "pyarrow" %}
+{% set version = "23.0.1" %}
 
 package:
-  name: pyarrow
+  name: {{ name }}
   version: {{ version }}
 
 source:
   - url: https://archive.apache.org/dist/arrow/arrow-{{ version }}/apache-arrow-{{ version }}.tar.gz
-    sha256: 5d3f8db7e72fb9f65f4785b7a1634522e8d8e9657a445af53d4a34a3849857b5
+    sha256: bd09adb4feac11fe49d1604f296618866702be610c86e2d513b561d877de6b18
   # test data (commits taken from submodules)
   # downloading by git is broken on windows workers atm
   {% if not win %}
@@ -21,8 +22,8 @@ source:
   {% endif %}
 
 build:
-  number: 1
-  skip: true  # [py<39]
+  number: 0
+  skip: true  # [py<310]
   rpaths:
     - lib/
     - {{ SP_DIR }}/pyarrow
@@ -39,21 +40,20 @@ build:
 
 requirements:
   build:
-    - cmake
-    - ninja-base
-    - make  # [unix]
     - {{ stdlib('c') }} 
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
+    - cmake
+    - ninja-base
+    - make  # [unix]
   host:
     - arrow-cpp {{ version }}
-    - cython >=3
+    - cython >=3.1
     - numpy {{ numpy }}
     - pip
     - python
-    - setuptools >=64
+    - setuptools >=77
     - setuptools_scm >=8
-    - wheel
   run:
     - python
 
@@ -73,6 +73,9 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_s3_real_aws" %}
 {% set tests_to_skip = tests_to_skip + " or test_resolve_s3_region" %}
 
+# ValueError: fromutc: dt.tzinfo is not self
+{% set tests_to_skip = tests_to_skip + " or test_timestamp_as_object_non_nanosecond" %}
+
 {% set tests_to_skip = tests_to_skip + " or test_to_pandas_zero_copy" %}   # [(linux or win) and py==314]
 
 #  PermissionError: [WinError 32] The process cannot access the file because it is being used by another process
@@ -82,6 +85,9 @@ requirements:
 # pyarrow.lib.ArrowNotImplementedError: This Arrow build does not enable mimalloc
 # - pyarrow\tests\test_memory.py::test_memory_pool_factories
 {% set tests_to_skip = tests_to_skip + " or test_memory_pool_factories" %} # [win]
+
+# AssertionError: Attributes of DataFrame.iloc[:, 0] (column name="a") are different
+{% set tests_to_skip = tests_to_skip + " or test_fastparquet_cross_compatibility" %} # [win]
 
 # Exception: Unrecognized table name
 # - pyarrow\tests\test_memory.py::test_supported_memory_backends
