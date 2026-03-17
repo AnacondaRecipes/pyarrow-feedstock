@@ -149,9 +149,10 @@ test:
     - pyarrow.fs
     - pyarrow._s3fs
     - pyarrow._hdfs
-    - pyarrow.cuda  # [(gpu_variant or "").startswith("cuda")]
   commands:
     - pip check
+    # CUDA import needs stub libcuda.so in CI (no real GPU)
+    - LD_PRELOAD=$PREFIX/lib/stubs/libcuda.so python -c "import pyarrow.cuda"  # [linux and (gpu_variant or "").startswith("cuda")]
     # Check for pytests in the site-package dir
     - test -f ${SP_DIR}/pyarrow/tests/test_array.py  # [unix]
     - if not exist %SP_DIR%/pyarrow/tests/test_array.py exit 1  # [win]
@@ -172,6 +173,7 @@ test:
   requires:
     - pip
     - pytest
+    - cuda-driver-dev  # [(gpu_variant or "").startswith("cuda")]  # provides stub libcuda.so for import test
     - cffi
     - cloudpickle
     - scipy
