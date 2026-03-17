@@ -54,6 +54,7 @@ requirements:
     - cmake
     - ninja-base
     - make  # [unix]
+    - git   # [unix]  # needed for git_url sources (parquet-testing, arrow-testing)
   host:
     # Request matching arrow-cpp variant (cpu or cuda build string)
     {% if cuda_enabled %}
