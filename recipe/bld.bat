@@ -32,6 +32,7 @@ SET ArrowAcero_DIR=%ARROW_HOME%\cmake\ArrowAcero
 SET Parquet_DIR=%ARROW_HOME%\cmake\Parquet
 SET ArrowSubstrait_DIR=%ARROW_HOME%\cmake\ArrowSubstrait
 SET ArrowCompute_DIR=%ARROW_HOME%\cmake\ArrowCompute
+if "%PYARROW_WITH_CUDA%"=="1" SET ArrowCUDA_DIR=%ARROW_HOME%\cmake\ArrowCUDA
 
 "%PYTHON%" -m pip install . -vv --no-deps --no-build-isolation
 
