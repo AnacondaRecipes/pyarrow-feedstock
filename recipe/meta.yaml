@@ -45,6 +45,7 @@ build:
   ignore_run_exports:
     # Only needed at build time
     - numpy
+    - cuda-cudart-dev  # CMake discovery only; pyarrow links libarrow_cuda not cudart
 
 requirements:
   build:
@@ -55,6 +56,8 @@ requirements:
     - ninja-base
     - make  # [unix]
     - git   # [unix]  # needed for git_url sources (parquet-testing, arrow-testing)
+    # pyarrow's CMake calls find_package(ArrowCUDA) which requires find_package(CUDAToolkit) → needs nvcc
+    - {{ compiler('cuda') }}    # [(gpu_variant or "").startswith("cuda")]
   host:
     # Request matching arrow-cpp variant (cpu or cuda build string)
     {% if cuda_enabled %}
