@@ -62,7 +62,7 @@ requirements:
     {% if cuda_enabled %}
     - arrow-cpp {{ version }} cuda{{ cuda_compiler_version | replace('.', '') }}*
     {% else %}
-    - arrow-cpp {{ version }} cpu*
+    - arrow-cpp {{ version }}
     {% endif %}
     - cython >=3.1
     - numpy {{ numpy }}
