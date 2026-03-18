@@ -2,7 +2,7 @@
 # `arrow-cpp-feedstock` and the SHA-256 hashes should match between the packages.
 {% set name = "pyarrow" %}
 {% set version = "23.0.1" %}
-{% set build_number = 0 %}
+{% set build_number = 1 %}
 {% set cuda_enabled = (gpu_variant or "").startswith("cuda") %}
 
 package:
@@ -75,9 +75,8 @@ requirements:
     - cuda-version {{ cuda_compiler_version }}  # [(gpu_variant or "").startswith("cuda")]
   run:
     - python
-    # CUDA runtime dependencies
+    # CUDA runtime dep (__cuda handled automatically by cuda-version via run_constrained)
     - {{ pin_compatible('cuda-version', max_pin='x.x') }}  # [(gpu_variant or "").startswith("cuda")]
-    - __cuda                                                # [(gpu_variant or "").startswith("cuda")]
 
 # ValueError: scipy.sparse does not support dtype float16. The only supported types are: bool_, int8, uint8, int16, uint16, int32, uint32, int64, uint64, longlong, ulonglong, float32, float64, longdouble, complex64, complex128, clongdouble.
     # https://github.com/apache/arrow/issues/45229 - temporary disabled:
@@ -155,8 +154,7 @@ test:
     - pyarrow._hdfs
   commands:
     - pip check
-    # CUDA import needs stub libcuda.so in CI (no real GPU)
-    - LD_PRELOAD=$PREFIX/lib/stubs/libcuda.so python -c "import pyarrow.cuda"  # [linux and (gpu_variant or "").startswith("cuda")]
+    - python -c "import pyarrow.cuda"  # [linux and (gpu_variant or "").startswith("cuda")]
     # Check for pytests in the site-package dir
     - test -f ${SP_DIR}/pyarrow/tests/test_array.py  # [unix]
     - if not exist %SP_DIR%/pyarrow/tests/test_array.py exit 1  # [win]
@@ -177,7 +175,6 @@ test:
   requires:
     - pip
     - pytest
-    - cuda-driver-dev  # [(gpu_variant or "").startswith("cuda")]  # provides stub libcuda.so for import test
     - cffi
     - cloudpickle
     - scipy
