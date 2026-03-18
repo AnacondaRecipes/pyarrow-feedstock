@@ -19,7 +19,12 @@ export PYARROW_WITH_PARQUET_ENCRYPTION=1
 export PYARROW_WITH_S3=1
 export PYARROW_WITH_SUBSTRAIT=1
 export PYARROW_WITH_GANDIVA=0
-export PYARROW_WITH_CUDA=0
+# CUDA support
+if [[ "${gpu_variant:-none}" == cuda* ]]; then
+    export PYARROW_WITH_CUDA=1
+else
+    export PYARROW_WITH_CUDA=0
+fi
 export PYARROW_WITH_AZURE=0
 export PYARROW_WITH_GCS=0
 export PYARROW_GENERATE_COVERAGE=0

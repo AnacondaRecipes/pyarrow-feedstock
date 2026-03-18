@@ -14,7 +14,11 @@ SET PYARROW_WITH_ORC=1
 SET PYARROW_WITH_PARQUET=1
 SET PYARROW_WITH_PARQUET_ENCRYPTION=1
 SET PYARROW_CMAKE_GENERATOR=Ninja
-SET PYARROW_WITH_CUDA=0
+@rem CUDA support
+set "PYARROW_WITH_CUDA=0"
+if defined gpu_variant (
+    echo %gpu_variant% | findstr /b "cuda" >nul && set "PYARROW_WITH_CUDA=1"
+)
 SET PYARROW_WITH_AZURE=0
 SET PYARROW_WITH_GCS=0
 SET PYARROW_GENERATE_COVERAGE=0
@@ -28,6 +32,7 @@ SET ArrowAcero_DIR=%ARROW_HOME%\cmake\ArrowAcero
 SET Parquet_DIR=%ARROW_HOME%\cmake\Parquet
 SET ArrowSubstrait_DIR=%ARROW_HOME%\cmake\ArrowSubstrait
 SET ArrowCompute_DIR=%ARROW_HOME%\cmake\ArrowCompute
+if "%PYARROW_WITH_CUDA%"=="1" SET ArrowCUDA_DIR=%ARROW_HOME%\cmake\ArrowCUDA
 
 "%PYTHON%" -m pip install . -vv --no-deps --no-build-isolation
 

@@ -2,6 +2,8 @@
 # `arrow-cpp-feedstock` and the SHA-256 hashes should match between the packages.
 {% set name = "pyarrow" %}
 {% set version = "23.0.1" %}
+{% set build_number = 1 %}
+{% set cuda_enabled = (gpu_variant or "").startswith("cuda") %}
 
 package:
   name: {{ name }}
@@ -22,7 +24,12 @@ source:
   {% endif %}
 
 build:
-  number: 0
+  number: {{ build_number + 100 if cuda_enabled else build_number }}
+  {% if cuda_enabled %}
+  string: cuda{{ cuda_compiler_version | replace('.', '') }}_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}
+  {% else %}
+  string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}
+  {% endif %}
   skip: true  # [py<310]
   rpaths:
     - lib/
@@ -37,6 +44,7 @@ build:
   ignore_run_exports:
     # Only needed at build time
     - numpy
+    - cuda-cudart-dev  # CMake discovery only; pyarrow links libarrow_cuda not cudart
 
 requirements:
   build:
@@ -46,16 +54,28 @@ requirements:
     - cmake
     - ninja-base
     - make  # [unix]
+    - git   # [unix]  # required by git_url sources in source section (parquet-testing, arrow-testing)
+    # pyarrow's CMake calls find_package(ArrowCUDA) which requires find_package(CUDAToolkit) → needs nvcc
+    - {{ compiler('cuda') }}    # [(gpu_variant or "").startswith("cuda")]
   host:
+    # Request matching arrow-cpp variant (cpu or cuda build string)
+    {% if cuda_enabled %}
+    - arrow-cpp {{ version }} cuda{{ cuda_compiler_version | replace('.', '') }}*
+    {% else %}
     - arrow-cpp {{ version }}
+    {% endif %}
     - cython >=3.1
     - numpy {{ numpy }}
     - pip
     - python
     - setuptools >=77
     - setuptools_scm >=8
+    # CUDA: needed for pin_compatible in run section
+    - cuda-version {{ cuda_compiler_version }}  # [(gpu_variant or "").startswith("cuda")]
   run:
     - python
+    # CUDA runtime dep (__cuda handled automatically by cuda-version via run_constrained)
+    - {{ pin_compatible('cuda-version', max_pin='x.x') }}  # [(gpu_variant or "").startswith("cuda")]
 
 # ValueError: scipy.sparse does not support dtype float16. The only supported types are: bool_, int8, uint8, int16, uint16, int32, uint32, int64, uint64, longlong, ulonglong, float32, float64, longdouble, complex64, complex128, clongdouble.
     # https://github.com/apache/arrow/issues/45229 - temporary disabled:
@@ -80,7 +100,7 @@ requirements:
 
 #  PermissionError: [WinError 32] The process cannot access the file because it is being used by another process
 # ..\_test_env\lib\pathlib.py:1206: PermissionError
-{% set tests_to_skip = tests_to_skip + " or test_relative_paths" %}   # [win and py==310]
+{% set tests_to_skip = tests_to_skip + " or test_relative_paths" %}   # [win]
 
 # pyarrow.lib.ArrowNotImplementedError: This Arrow build does not enable mimalloc
 # - pyarrow\tests\test_memory.py::test_memory_pool_factories
@@ -133,6 +153,7 @@ test:
     - pyarrow._hdfs
   commands:
     - pip check
+    - python -c "import pyarrow.cuda"  # [linux and (gpu_variant or "").startswith("cuda")]
     # Check for pytests in the site-package dir
     - test -f ${SP_DIR}/pyarrow/tests/test_array.py  # [unix]
     - if not exist %SP_DIR%/pyarrow/tests/test_array.py exit 1  # [win]
