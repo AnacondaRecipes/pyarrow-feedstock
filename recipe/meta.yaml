@@ -41,7 +41,6 @@ build:
     - "*/arrow_python.dll"                       # [win]
     - "*/arrow_python_flight.dll"                # [win]
     - "*/arrow_python_parquet_encryption.dll"    # [win]
-    - "**/libcuda.so*"                           # [(gpu_variant or "").startswith("cuda")]
   ignore_run_exports:
     # Only needed at build time
     - numpy
@@ -55,7 +54,7 @@ requirements:
     - cmake
     - ninja-base
     - make  # [unix]
-    - git   # [unix]  # needed for git_url sources (parquet-testing, arrow-testing)
+    - git   # [unix]  # required by git_url sources in source section (parquet-testing, arrow-testing)
     # pyarrow's CMake calls find_package(ArrowCUDA) which requires find_package(CUDAToolkit) → needs nvcc
     - {{ compiler('cuda') }}    # [(gpu_variant or "").startswith("cuda")]
   host:
