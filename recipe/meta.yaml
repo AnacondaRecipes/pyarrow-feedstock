@@ -22,7 +22,7 @@ source:
 
 build:
   number: 0
-  skip: true  # [py<39]
+  skip: true  # [py<310]
   rpaths:
     - lib/
     - {{ SP_DIR }}/pyarrow
@@ -42,6 +42,7 @@ requirements:
     - cmake
     - ninja-base
     - make  # [unix]
+    - git   # [unix]  # required by git_url sources in source section (parquet-testing, arrow-testing)
     - {{ stdlib('c') }} 
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
