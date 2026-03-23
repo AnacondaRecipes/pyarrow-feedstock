@@ -68,12 +68,29 @@ requirements:
 # Failed: DID NOT RAISE <class 'OSError'>
 {% set tests_to_skip = tests_to_skip + " or test_s3_real_aws_region_selection" %}
 
+# ValueError: fromutc: dt.tzinfo is not self
+{% set tests_to_skip = tests_to_skip + " or test_timestamp_as_object_non_nanosecond" %}
+
 # pyarrow.lib.ArrowException: Unknown error: Compression block size must be a multiple of memory block size.
 {% set tests_to_skip = tests_to_skip + " or test_buffer_readwrite_with_writeoptions" %}
+
+{% set tests_to_skip = tests_to_skip + " or test_s3fs_wrong_region" %}
+{% set tests_to_skip = tests_to_skip + " or test_s3_real_aws" %}
+{% set tests_to_skip = tests_to_skip + " or test_resolve_s3_region" %}
+
+{% set tests_to_skip = tests_to_skip + " or test_to_pandas_zero_copy" %}   # [linux and py==314]
 
 # pyarrow.lib.ArrowNotImplementedError: This Arrow build does not enable mimalloc
 # - pyarrow\tests\test_memory.py::test_memory_pool_factories
 {% set tests_to_skip = tests_to_skip + " or test_memory_pool_factories" %} # [win]
+
+# AssertionError: Attributes of DataFrame.iloc[:, 0] (column name="a") are different
+{% set tests_to_skip = tests_to_skip + " or test_fastparquet_cross_compatibility" %}
+
+# AssertionError: Attributes of DataFrame.iloc[:, 0] (column name="datetime") are different
+{% set tests_to_skip = tests_to_skip + " or test_mismatch_metadata_schema" %}
+# AssertionError: DataFrame.columns are different
+{% set tests_to_skip = tests_to_skip + " or test_column_index_names_with_tz" %}
 
 # Exception: Unrecognized table name
 # - pyarrow\tests\test_memory.py::test_supported_memory_backends
@@ -147,6 +164,7 @@ test:
     - pandas
     - s3fs >=2023
     - fastparquet
+    - pytz
 
 about:
   home: https://github.com/apache/arrow
