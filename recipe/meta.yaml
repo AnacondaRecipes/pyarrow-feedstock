@@ -48,9 +48,9 @@ requirements:
     - {{ compiler('cxx') }}
   host:
     - arrow-cpp {{ version }}
-    - cython >=3
+    - cython >=3.1
     - numpy 2.0 # [py<313]
-    - numpy 2.1 # [py>=313]
+    - numpy {{ numpy }} # [py>=313]
     - pip
     - python
     - setuptools >=64
