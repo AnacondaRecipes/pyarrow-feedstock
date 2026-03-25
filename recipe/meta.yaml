@@ -1,6 +1,6 @@
 # Note that this feedstock must be paired with bumping the version of
 # `arrow-cpp-feedstock` and the SHA-256 hashes should match between the packages.
-{% set version = "21.0.0" %}
+{% set version = "22.0.0" %}
 
 package:
   name: pyarrow
@@ -8,7 +8,7 @@ package:
 
 source:
   - url: https://archive.apache.org/dist/arrow/arrow-{{ version }}/apache-arrow-{{ version }}.tar.gz
-    sha256: 5d3f8db7e72fb9f65f4785b7a1634522e8d8e9657a445af53d4a34a3849857b5
+    sha256: 131250cd24dec0cddde04e2ad8c9e2bc43edc5e84203a81cf71cf1a33a6e7e0f 
   # test data (commits taken from submodules)
   # downloading by git is broken on windows workers atm
   {% if not win %}
@@ -22,7 +22,7 @@ source:
 
 build:
   number: 0
-  skip: true  # [py<39]
+  skip: true  # [py<310]
   rpaths:
     - lib/
     - {{ SP_DIR }}/pyarrow
@@ -42,14 +42,15 @@ requirements:
     - cmake
     - ninja-base
     - make  # [unix]
+    - git   # [unix]  # required by git_url sources in source section (parquet-testing, arrow-testing)
     - {{ stdlib('c') }} 
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
   host:
     - arrow-cpp {{ version }}
-    - cython >=3
+    - cython >=3.1
     - numpy 2.0 # [py<313]
-    - numpy 2.1 # [py>=313]
+    - numpy {{ numpy }} # [py>=313]
     - pip
     - python
     - setuptools >=64
@@ -67,12 +68,29 @@ requirements:
 # Failed: DID NOT RAISE <class 'OSError'>
 {% set tests_to_skip = tests_to_skip + " or test_s3_real_aws_region_selection" %}
 
+# ValueError: fromutc: dt.tzinfo is not self
+{% set tests_to_skip = tests_to_skip + " or test_timestamp_as_object_non_nanosecond" %}
+
 # pyarrow.lib.ArrowException: Unknown error: Compression block size must be a multiple of memory block size.
 {% set tests_to_skip = tests_to_skip + " or test_buffer_readwrite_with_writeoptions" %}
+
+{% set tests_to_skip = tests_to_skip + " or test_s3fs_wrong_region" %}
+{% set tests_to_skip = tests_to_skip + " or test_s3_real_aws" %}
+{% set tests_to_skip = tests_to_skip + " or test_resolve_s3_region" %}
+
+{% set tests_to_skip = tests_to_skip + " or test_to_pandas_zero_copy" %}   # [linux and py==314]
 
 # pyarrow.lib.ArrowNotImplementedError: This Arrow build does not enable mimalloc
 # - pyarrow\tests\test_memory.py::test_memory_pool_factories
 {% set tests_to_skip = tests_to_skip + " or test_memory_pool_factories" %} # [win]
+
+# AssertionError: Attributes of DataFrame.iloc[:, 0] (column name="a") are different
+{% set tests_to_skip = tests_to_skip + " or test_fastparquet_cross_compatibility" %}
+
+# AssertionError: Attributes of DataFrame.iloc[:, 0] (column name="datetime") are different
+{% set tests_to_skip = tests_to_skip + " or test_mismatch_metadata_schema" %}
+# AssertionError: DataFrame.columns are different
+{% set tests_to_skip = tests_to_skip + " or test_column_index_names_with_tz" %}
 
 # Exception: Unrecognized table name
 # - pyarrow\tests\test_memory.py::test_supported_memory_backends
@@ -146,6 +164,7 @@ test:
     - pandas
     - s3fs >=2023
     - fastparquet
+    - pytz
 
 about:
   home: https://github.com/apache/arrow
