@@ -24,15 +24,15 @@ SET PYARROW_WITH_GCS=0
 SET PYARROW_GENERATE_COVERAGE=0
 SET PYARROW_BUNDLE_ARROW_CPP=0
 SET PYARROW_BUNDLE_CYTHON_CPP=0
-@rem manually specify the path to the cmake config files
-SET Arrow_DIR=%ARROW_HOME%\cmake\Arrow
-SET ArrowFlight_DIR=%ARROW_HOME%\cmake\ArrowFlight
-SET ArrowDataset_DIR=%ARROW_HOME%\cmake\ArrowDataset
-SET ArrowAcero_DIR=%ARROW_HOME%\cmake\ArrowAcero
-SET Parquet_DIR=%ARROW_HOME%\cmake\Parquet
-SET ArrowSubstrait_DIR=%ARROW_HOME%\cmake\ArrowSubstrait
-SET ArrowCompute_DIR=%ARROW_HOME%\cmake\ArrowCompute
-if "%PYARROW_WITH_CUDA%"=="1" SET ArrowCUDA_DIR=%ARROW_HOME%\cmake\ArrowCUDA
+@rem point to arrow-cpp's cmake config files (conda convention: %LIBRARY_PREFIX%\lib\cmake\<Pkg>)
+SET Arrow_DIR=%ARROW_HOME%\lib\cmake\Arrow
+SET ArrowFlight_DIR=%ARROW_HOME%\lib\cmake\ArrowFlight
+SET ArrowDataset_DIR=%ARROW_HOME%\lib\cmake\ArrowDataset
+SET ArrowAcero_DIR=%ARROW_HOME%\lib\cmake\ArrowAcero
+SET Parquet_DIR=%ARROW_HOME%\lib\cmake\Parquet
+SET ArrowSubstrait_DIR=%ARROW_HOME%\lib\cmake\ArrowSubstrait
+SET ArrowCompute_DIR=%ARROW_HOME%\lib\cmake\ArrowCompute
+if "%PYARROW_WITH_CUDA%"=="1" SET ArrowCUDA_DIR=%ARROW_HOME%\lib\cmake\ArrowCUDA
 
 "%PYTHON%" -m pip install . -vv --no-deps --no-build-isolation
 

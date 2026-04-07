@@ -153,7 +153,7 @@ test:
     - pyarrow._hdfs
   commands:
     - pip check
-    - python -c "import pyarrow.cuda"  # [linux and (gpu_variant or "").startswith("cuda")]
+    - python -c "import pyarrow.cuda"  # [(linux or win) and (gpu_variant or "").startswith("cuda")]
     # Check for pytests in the site-package dir
     - test -f ${SP_DIR}/pyarrow/tests/test_array.py  # [unix]
     - if not exist %SP_DIR%/pyarrow/tests/test_array.py exit 1  # [win]
