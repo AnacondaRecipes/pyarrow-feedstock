@@ -24,15 +24,9 @@ SET PYARROW_WITH_GCS=0
 SET PYARROW_GENERATE_COVERAGE=0
 SET PYARROW_BUNDLE_ARROW_CPP=0
 SET PYARROW_BUNDLE_CYTHON_CPP=0
-@rem point to arrow-cpp's cmake config files (conda convention: %LIBRARY_PREFIX%\lib\cmake\<Pkg>)
-SET Arrow_DIR=%ARROW_HOME%\lib\cmake\Arrow
-SET ArrowFlight_DIR=%ARROW_HOME%\lib\cmake\ArrowFlight
-SET ArrowDataset_DIR=%ARROW_HOME%\lib\cmake\ArrowDataset
-SET ArrowAcero_DIR=%ARROW_HOME%\lib\cmake\ArrowAcero
-SET Parquet_DIR=%ARROW_HOME%\lib\cmake\Parquet
-SET ArrowSubstrait_DIR=%ARROW_HOME%\lib\cmake\ArrowSubstrait
-SET ArrowCompute_DIR=%ARROW_HOME%\lib\cmake\ArrowCompute
-if "%PYARROW_WITH_CUDA%"=="1" SET ArrowCUDA_DIR=%ARROW_HOME%\lib\cmake\ArrowCUDA
+@rem CMake's find_package auto-discovers arrow-cpp's config files via ARROW_HOME
+@rem (searches %ARROW_HOME%\lib\cmake\<Pkg>\). No explicit *_DIR overrides needed
+@rem once arrow-cpp installs at the conda convention path — matches Linux build.sh.
 
 "%PYTHON%" -m pip install . -vv --no-deps --no-build-isolation
 
