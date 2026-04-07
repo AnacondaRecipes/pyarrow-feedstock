@@ -2,7 +2,7 @@
 # `arrow-cpp-feedstock` and the SHA-256 hashes should match between the packages.
 {% set name = "pyarrow" %}
 {% set version = "23.0.1" %}
-{% set build_number = 2 %}
+{% set build_number = 3 %}
 {% set cuda_enabled = (gpu_variant or "").startswith("cuda") %}
 
 package:
