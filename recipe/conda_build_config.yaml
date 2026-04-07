@@ -1,11 +1,11 @@
 gpu_variant:
   - none
-  - cuda-12                             # [linux]
-  - cuda-13                             # [linux]
+  - cuda-12                             # [win or linux]
+  - cuda-13                             # [win or linux]
 cuda_compiler_version:
   - none
-  - 12.9                                # [linux]
-  - 13.1                                # [linux]
+  - 12.9                                # [win or linux]
+  - 13.1                                # [win or linux]
 
 # No GCC downgrade needed: pyarrow does not compile .cu files.
 # It builds Python bindings that link against arrow-cpp's CUDA library (libarrow_cuda).
