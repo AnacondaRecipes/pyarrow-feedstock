@@ -24,10 +24,6 @@ SET PYARROW_WITH_GCS=0
 SET PYARROW_GENERATE_COVERAGE=0
 SET PYARROW_BUNDLE_ARROW_CPP=0
 SET PYARROW_BUNDLE_CYTHON_CPP=0
-@rem CMake's find_package auto-discovers arrow-cpp's config files via ARROW_HOME
-@rem (searches %ARROW_HOME%\lib\cmake\<Pkg>\). No explicit *_DIR overrides needed
-@rem once arrow-cpp installs at the conda convention path — matches Linux build.sh.
-
 "%PYTHON%" -m pip install . -vv --no-deps --no-build-isolation
 
 if errorlevel 1 exit 1
