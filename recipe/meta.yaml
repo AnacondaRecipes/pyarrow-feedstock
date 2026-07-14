@@ -1,8 +1,8 @@
 # Note that this feedstock must be paired with bumping the version of
 # `arrow-cpp-feedstock` and the SHA-256 hashes should match between the packages.
 {% set name = "pyarrow" %}
-{% set version = "23.0.1" %}
-{% set build_number = 3 %}
+{% set version = "24.0.0" %}
+{% set build_number = 0 %}
 {% set cuda_enabled = (gpu_variant or "").startswith("cuda") %}
 
 package:
@@ -11,7 +11,7 @@ package:
 
 source:
   - url: https://archive.apache.org/dist/arrow/arrow-{{ version }}/apache-arrow-{{ version }}.tar.gz
-    sha256: bd09adb4feac11fe49d1604f296618866702be610c86e2d513b561d877de6b18
+    sha256: 9a8094d24fa33b90c672ab77fdda253f29300c8b0dd3f0b8e55a29dbd98b82c9
   # test data (commits taken from submodules)
   # downloading by git is broken on windows workers atm
   {% if not win %}
@@ -19,7 +19,7 @@ source:
     git_rev: 18d17540097fca7c40be3d42c167e6bfad90763c
     folder: parquet-testing
   - git_url: https://github.com/apache/arrow-testing.git
-    git_rev: fbf6b703dc93d17d75fa3664c5aa2c7873ebaf06
+    git_rev: d2a13712303498963395318a4eb42872e66aead7
     folder: arrow-testing
   {% endif %}
 
@@ -58,17 +58,18 @@ requirements:
     # pyarrow's CMake calls find_package(ArrowCUDA) which requires find_package(CUDAToolkit) → needs nvcc
     - {{ compiler('cuda') }}    # [(gpu_variant or "").startswith("cuda")]
   host:
+    - pip
+    - python
     # Request matching arrow-cpp variant (cpu or cuda build string)
     {% if cuda_enabled %}
     - arrow-cpp {{ version }} cuda{{ cuda_compiler_version | replace('.', '') }}*
     {% else %}
     - arrow-cpp {{ version }}
     {% endif %}
+    - scikit-build-core
     - cython >=3.1
+    - libcst >=1.8.6
     - numpy {{ numpy }}
-    - pip
-    - python
-    - setuptools >=77
     - setuptools_scm >=8
     # CUDA: needed for pin_compatible in run section
     - cuda-version {{ cuda_compiler_version }}  # [(gpu_variant or "").startswith("cuda")]
