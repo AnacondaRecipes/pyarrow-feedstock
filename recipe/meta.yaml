@@ -2,7 +2,7 @@
 # `arrow-cpp-feedstock` and the SHA-256 hashes should match between the packages.
 {% set name = "pyarrow" %}
 {% set version = "24.0.0" %}
-{% set build_number = 0 %}
+{% set build_number = 1 %}
 {% set cuda_enabled = (gpu_variant or "").startswith("cuda") %}
 
 package:
@@ -75,7 +75,12 @@ requirements:
     - cuda-version {{ cuda_compiler_version }}  # [(gpu_variant or "").startswith("cuda")]
   run:
     - python
-    # CUDA runtime dep (__cuda handled automatically by cuda-version via run_constrained)
+    # Gate the CUDA build to GPU hosts. __cuda must be a hard run dep (unbounded):
+    # cuda-version only carries __cuda in run_constrained, which does not trigger when
+    # the virtual package is absent, and arrow-cpp deliberately keeps __cuda in
+    # run_constrained too, so nothing else gates this variant to CUDA hardware.
+    # cuda-version handles the version bound.
+    - __cuda                                              # [(gpu_variant or "").startswith("cuda")]
     - {{ pin_compatible('cuda-version', max_pin='x.x') }}  # [(gpu_variant or "").startswith("cuda")]
 
 # ValueError: scipy.sparse does not support dtype float16. The only supported types are: bool_, int8, uint8, int16, uint16, int32, uint32, int64, uint64, longlong, ulonglong, float32, float64, longdouble, complex64, complex128, clongdouble.
