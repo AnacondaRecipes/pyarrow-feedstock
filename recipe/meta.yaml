@@ -2,7 +2,7 @@
 # `arrow-cpp-feedstock` and the SHA-256 hashes should match between the packages.
 {% set name = "pyarrow" %}
 {% set version = "24.0.0" %}
-{% set build_number = 2 %}
+{% set build_number = 3 %}
 {% set cuda_enabled = (gpu_variant or "").startswith("cuda") %}
 
 package:
@@ -187,7 +187,8 @@ test:
     - hypothesis
     - pandas
     # TODO: remove these selectors once py314/win available 
-    - s3fs >=2023  # [py<314 and win]
+    # s3fs is not available on win-arm64; the tests that need it skip themselves
+    - s3fs >=2023  # [py<314 and win and x86_64]
     - fastparquet  # [py<314 and win]
 
 about:
