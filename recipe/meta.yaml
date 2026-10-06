@@ -2,7 +2,7 @@
 # `arrow-cpp-feedstock` and the SHA-256 hashes should match between the packages.
 {% set name = "pyarrow" %}
 {% set version = "24.0.0" %}
-{% set build_number = 2 %}
+{% set build_number = 3 %}
 {% set cuda_enabled = (gpu_variant or "").startswith("cuda") %}
 
 package:
@@ -44,7 +44,6 @@ build:
   ignore_run_exports:
     # Only needed at build time
     - numpy
-    - cuda-cudart-dev  # CMake discovery only; pyarrow links libarrow_cuda not cudart
 
 requirements:
   build:
@@ -64,7 +63,7 @@ requirements:
     {% if cuda_enabled %}
     - arrow-cpp {{ version }} cuda{{ cuda_compiler_version | replace('.', '') }}*
     {% else %}
-    - arrow-cpp {{ version }}
+    - arrow-cpp {{ version }} cpu*
     {% endif %}
     - scikit-build-core
     - cython >=3.1
@@ -81,6 +80,9 @@ requirements:
     # run_constrained too, so nothing else gates this variant to CUDA hardware.
     # cuda-version handles the version bound.
     - __cuda                                              # [(gpu_variant or "").startswith("cuda")]
+    # pyarrow.cuda links arrow_cuda, which only the CUDA arrow-cpp build ships; arrow-cpp's
+    # run_export is a version range and does not select the variant.
+    - arrow-cpp {{ version }} cuda{{ cuda_compiler_version | replace('.', '') }}*  # [(gpu_variant or "").startswith("cuda")]
     - {{ pin_compatible('cuda-version', max_pin='x.x') }}  # [(gpu_variant or "").startswith("cuda")]
 
 # ValueError: scipy.sparse does not support dtype float16. The only supported types are: bool_, int8, uint8, int16, uint16, int32, uint32, int64, uint64, longlong, ulonglong, float32, float64, longdouble, complex64, complex128, clongdouble.
@@ -186,9 +188,9 @@ test:
     - fsspec
     - hypothesis
     - pandas
-    # TODO: remove these selectors once py314/win available 
-    - s3fs >=2023  # [py<314 and win]
-    - fastparquet  # [py<314 and win]
+    # s3fs is not available on win-arm64; the tests that need it skip themselves
+    - s3fs >=2023  # [win and x86_64]
+    - fastparquet  # [win]
 
 about:
   home: https://github.com/apache/arrow
