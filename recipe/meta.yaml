@@ -44,7 +44,6 @@ build:
   ignore_run_exports:
     # Only needed at build time
     - numpy
-    - cuda-cudart-dev  # CMake discovery only; pyarrow links libarrow_cuda not cudart
 
 requirements:
   build:
@@ -189,10 +188,9 @@ test:
     - fsspec
     - hypothesis
     - pandas
-    # TODO: remove these selectors once py314/win available 
     # s3fs is not available on win-arm64; the tests that need it skip themselves
-    - s3fs >=2023  # [py<314 and win and x86_64]
-    - fastparquet  # [py<314 and win]
+    - s3fs >=2023  # [win and x86_64]
+    - fastparquet  # [win]
 
 about:
   home: https://github.com/apache/arrow
