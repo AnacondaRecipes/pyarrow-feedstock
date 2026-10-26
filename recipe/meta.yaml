@@ -136,6 +136,7 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_undefined_logical_type" %}           # [win]
 {% set tests_to_skip = tests_to_skip + " or test_column_chunk_key_value_metadata" %}  # [win]
 {% set tests_to_skip = tests_to_skip + " or test_read_undefined_logical_type" %}      # [win]
+{% set tests_to_skip = tests_to_skip + " or test_geospatial_types" %}                 # [win]
 
 test:
   source_files:
