@@ -1,8 +1,8 @@
 # Note that this feedstock must be paired with bumping the version of
 # `arrow-cpp-feedstock` and the SHA-256 hashes should match between the packages.
 {% set name = "pyarrow" %}
-{% set version = "24.0.0" %}
-{% set build_number = 3 %}
+{% set version = "26.0.0" %}
+{% set build_number = 0 %}
 {% set cuda_enabled = (gpu_variant or "").startswith("cuda") %}
 
 package:
@@ -11,15 +11,15 @@ package:
 
 source:
   - url: https://archive.apache.org/dist/arrow/arrow-{{ version }}/apache-arrow-{{ version }}.tar.gz
-    sha256: 9a8094d24fa33b90c672ab77fdda253f29300c8b0dd3f0b8e55a29dbd98b82c9
+    sha256: b153ef472dd89ef4cb84867ca238f2a3a9347d8f4a78913d16ca2201606f0425
   # test data (commits taken from submodules)
   # downloading by git is broken on windows workers atm
   {% if not win %}
   - git_url: https://github.com/apache/parquet-testing.git
-    git_rev: 18d17540097fca7c40be3d42c167e6bfad90763c
+    git_rev: 56653c437c8092f704a092d0d1d4e600124cd49f
     folder: parquet-testing
   - git_url: https://github.com/apache/arrow-testing.git
-    git_rev: d2a13712303498963395318a4eb42872e66aead7
+    git_rev: 9ff285c88565f0f6abc855918c6a342e70e4909c
     folder: arrow-testing
   {% endif %}
 
@@ -30,7 +30,7 @@ build:
   {% else %}
   string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}
   {% endif %}
-  skip: true  # [py<310]
+  skip: true  # [py<311]
   rpaths:
     - lib/
     - {{ SP_DIR }}/pyarrow
@@ -65,9 +65,11 @@ requirements:
     {% else %}
     - arrow-cpp {{ version }} cpu*
     {% endif %}
-    - scikit-build-core
+    - scikit-build-core >=1.0
     - cython >=3.1
-    - libcst >=1.8.6
+    # upstream: libcst>=1.9.0 on py3.15+ for build-time stub docstring extraction
+    - libcst >=1.9.0  # [py>=315]
+    - libcst >=1.8.6  # [py<315]
     - numpy {{ numpy }}
     - setuptools_scm >=8
     # CUDA: needed for pin_compatible in run section
@@ -85,10 +87,7 @@ requirements:
     - arrow-cpp {{ version }} cuda{{ cuda_compiler_version | replace('.', '') }}*  # [(gpu_variant or "").startswith("cuda")]
     - {{ pin_compatible('cuda-version', max_pin='x.x') }}  # [(gpu_variant or "").startswith("cuda")]
 
-# ValueError: scipy.sparse does not support dtype float16. The only supported types are: bool_, int8, uint8, int16, uint16, int32, uint32, int64, uint64, longlong, ulonglong, float32, float64, longdouble, complex64, complex128, clongdouble.
-    # https://github.com/apache/arrow/issues/45229 - temporary disabled:
-    #   - pyarrow/tests/test_sparse_tensor.py::test_sparse_coo_tensor_scipy_roundtrip
-{% set tests_to_skip = "test_sparse_coo_tensor_scipy_roundtrip" %}
+{% set tests_to_skip = "_not_a_real_test" %}
 
 # with pytest.raises(IOError, match="Bucket '.*' not found"):
 # Failed: DID NOT RAISE <class 'OSError'>
@@ -113,9 +112,6 @@ requirements:
 # pyarrow.lib.ArrowNotImplementedError: This Arrow build does not enable mimalloc
 # - pyarrow\tests\test_memory.py::test_memory_pool_factories
 {% set tests_to_skip = tests_to_skip + " or test_memory_pool_factories" %} # [win]
-
-# AssertionError: Attributes of DataFrame.iloc[:, 0] (column name="a") are different
-{% set tests_to_skip = tests_to_skip + " or test_fastparquet_cross_compatibility" %} # [win]
 
 # Exception: Unrecognized table name
 # - pyarrow\tests\test_memory.py::test_supported_memory_backends
@@ -188,6 +184,7 @@ test:
     - fsspec
     - hypothesis
     - pandas
+    - pytz
     # s3fs is not available on win-arm64; the tests that need it skip themselves
     - s3fs >=2023  # [win and x86_64]
     - fastparquet  # [win]
@@ -196,14 +193,16 @@ about:
   home: https://github.com/apache/arrow
   license: Apache-2.0
   license_family: Apache
-  license_file: LICENSE.txt
+  license_file:
+    - LICENSE.txt
+    - NOTICE.txt
   summary: Python libraries for Apache Arrow
   description: |
     This library provides a Python API for functionality provided by the Arrow C++ libraries, 
     along with tools for Arrow integration and interoperability with pandas, NumPy, and other 
     software in the Python ecosystem.
   dev_url: https://github.com/apache/arrow/tree/main/python
-  doc_url: https://github.com/apache/arrow/blob/main/docs/source/developers/python.rst
+  doc_url: https://arrow.apache.org/docs/python
 
 extra:
   recipe-maintainers:
